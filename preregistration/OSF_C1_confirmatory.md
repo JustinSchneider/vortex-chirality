@@ -147,6 +147,14 @@ rotation or circular-speed amplitudes.
 The author has also analysed MaNGA DR17 with the same pipeline. Those
 exploratory results motivate the hypotheses and the power analysis.
 
+Inspecting the catalogues influenced only how two eCALIFA columns are read
+(`ellip` as an eccentricity, `DA` as kpc/arcsec; see "Data collection
+procedures"). Nothing outcome-related was seen.
+
+Secondary analyses 5 and 8 reuse the MaNGA data. The author has already
+analysed those data, so these two analyses are labelled accordingly and do not
+enter the verdict.
+
 The pipeline measures every kinematic PA itself. The published PAs (the SAMI
 catalogue PA_STELKIN and PA_GASKIN, Ristea et al. Table D1, and the
 Barrera-Ballesteros tables) are not used for selection. They are used only in
