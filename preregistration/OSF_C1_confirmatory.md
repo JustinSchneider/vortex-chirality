@@ -1,0 +1,332 @@
+# OSF Preregistration: confirmatory chirality test C1 (SAMI DR3 + CALIFA DR3)
+
+DRAFT, 2026-10-02. Sections follow the fields of the OSF "OSF Preregistration"
+template, in order. Items marked [[...]] await the data-product documentation
+check and must be resolved before submission.
+
+---
+
+## Title
+
+Do gas disks counter-rotating with respect to their stars rotate more slowly? A
+pre-registered confirmatory test with SAMI and CALIFA integral-field kinematics
+
+## Description
+
+Some proposed alternatives to dark matter add a velocity-dependent force to
+galaxy dynamics. Two examples are vorticity of space (a "flowing space" or
+gravitomagnetic-like field) and a Coriolis-type term. Such a force is odd under
+time reversal, so it treats orbits that move with and against the field
+differently. At a given radius, stars and gas co-rotating with the field gain
+circular speed. Material rotating the other way loses it. The predicted
+asymmetry is ΔV = Rζ, where ζ is the field's vorticity. Dark matter, MOND and
+modified inertia are time-reversal symmetric and predict ΔV = 0 after correcting
+for pressure support (asymmetric drift).
+
+Galaxies whose ionised gas counter-rotates with respect to their stars are a
+natural laboratory. The field is set by the dominant (stellar or baryonic)
+rotation. Under a velocity-dependent term, the counter-rotating gas should show
+a lower drift-corrected circular speed than the stars, relative to matched
+co-rotating controls.
+
+An exploratory analysis of MaNGA DR17 (90 counter-rotators, 270 matched
+controls; full log at [[GitHub/Zenodo URL]]) gave four findings:
+- The counter-rotators show a mean "slowdown" that is smaller than the full
+  vortex prediction.
+- The slowdown is not robust to analysis choices.
+- The slowdown correlates with the kinematic twist of the gas (Spearman
+  ρ = +0.32, p = 0.002), not with the predicted vortex amplitude.
+- When the slowdown is extrapolated to zero gas twist at 1.5 R_e, it is
+  +11.6 ± 7.4 km/s, against a vortex prediction of about 40 km/s.
+
+Those results were found after looking at the data, so they generate the
+hypotheses tested here; they do not confirm them. This registration fixes, in
+advance, a test of the zero-twist slowdown on independent samples: SAMI DR3 and
+CALIFA DR3, excluding any galaxy also in MaNGA.
+
+## Hypotheses
+
+Let s_i be the slowdown of counter-rotator i at 1.5 R_e: the median D of its
+matched co-rotating controls minus its own D, where D is the drift-corrected
+gas-minus-stars circular-speed difference (defined under "Indices"). Let t_i be
+its gas kinematic twist in degrees. Fit s_i = a + b·t_i. The intercept a is the
+slowdown of a counter-rotator whose gas has settled into a single plane.
+
+- **H_V (velocity-dependent / vortex term carries the mass discrepancy):**
+  a = P, where P is the mean over the counter-rotators of the predicted Rζ_i.
+  It is computed by assuming that the field accounts for all of the
+  radial-acceleration-relation (RAR) discrepancy (see "Statistical models").
+  Directional: a > 0. Expected P ≈ 35–45 km/s, based on the MaNGA sample.
+- **H_C (conventional: dark matter / MOND / modified inertia, with
+  non-equilibrium gas):** a = 0, with b > 0, i.e. slowdown grows with gas twist
+  because unsettled, warped or inflowing gas is not on circular orbits.
+
+The primary estimand is the fraction f = a / P. This is the share of the full
+vortex amplitude that the data allow. H_V is f = 1; H_C is f = 0.
+
+## Study type
+
+Observational study, analysing existing public data.
+
+## Blinding
+
+There are no human participants. Analysis blinding works as follows:
+- The entire pipeline (selection → measurement → matching → statistics) is
+  frozen at the commit given below before any SAMI or CALIFA kinematic product
+  is downloaded.
+- A "dry" mode will first be run to check mechanics. It prints only sample
+  counts. It does not print D, s, a, b, f or any rotation amplitude.
+- The survey loaders are written from the documentation alone. During the dry
+  run, a loader may be fixed only for a mechanical error: a crash, a
+  mis-read extension or unit, or a wrong mask convention. Every fix is
+  committed and logged with its date in `preregistration/PREREG.md` before the
+  full run. No change to cuts, statistics or decision rules is allowed.
+- The full analysis is then run once.
+
+## Study design
+
+This is a case-control comparison, run in the same way on each survey:
+
+1. **Measure kinematic position angles.** Every galaxy with both stellar and
+   ionised-gas velocity maps gets stellar and gas PAs, measured with the
+   repository's `receding_pa` (pafit, Krajnović et al. 2006, with the
+   convention fix and unit test in commit 1ee3136).
+2. **Form the groups.**
+   - Counter-rotators (CR): ΔPA > 150°.
+   - Co-rotating pool (CO): ΔPA < 30°.
+   - Both groups also require PA errors ≤ 20° for both components.
+3. **Match controls.** Each CR gets 3 CO controls, chosen by greedy
+   nearest-neighbour matching without replacement on standardised covariates.
+   Seed 20261002, the same algorithm as the MaNGA run.
+4. **Measure rings.** All CR and controls are measured in elliptical rings at
+   0.5, 0.75, 1.0, 1.25 and 1.5 R_e, each 0.25 R_e wide.
+
+## Randomization
+
+Not applicable. The order of greedy matching is a fixed-seed random
+permutation (seed 20261002).
+
+## Existing data
+
+Registration prior to accessing the data.
+
+## Explanation of existing data
+
+SAMI DR3 and CALIFA DR3 are public. As of registration, the author has not
+downloaded or viewed any SAMI or CALIFA stellar or gas velocity map, cube, or
+catalogue value of rotation velocity or dispersion.
+
+The author has read:
+- the SAMI DR3 and CALIFA DR3 release papers;
+- the SAMI misalignment study of Ristea et al. (2022), which reports counts of
+  misaligned and counter-rotating galaxies but no comparison of gas and
+  stellar circular speeds;
+- [[confirm any CALIFA misalignment paper read]].
+
+The author has also analysed MaNGA DR17 with the same pipeline. Those
+exploratory results motivate the hypotheses and the power analysis.
+
+Galaxies observed by MaNGA are excluded, so no counter-rotator can be in both
+samples.
+
+## Data collection procedures
+
+**SAMI DR3** (Croom et al. 2021): [[stellar velocity/dispersion map product
+name, pPXF variant, binning]]; [[gas velocity/dispersion product name and
+component]]; [[catalogue tables for R_e, ellipticity, PA, M_*, morphology]].
+Retrieved from Data Central [[method]].
+
+**CALIFA DR3** (Sánchez et al. 2016):
+- Stellar kinematics: [[product; V1200 setup; Falcon-Barroso et al. 2017]].
+- Gas kinematics: [[Pipe3D H-alpha velocity and dispersion planes; V500
+  setup]].
+- Catalogue quantities: [[source]].
+
+**Overlap exclusion:**
+- Any SAMI or CALIFA galaxy within 3″ of a MaNGA DR17 target is removed.
+- Galaxies in both SAMI and CALIFA are kept once, from CALIFA, because its
+  wider field covers 1.5 R_e more often.
+
+## Sample size
+
+Every galaxy that passes the cuts is analysed; there is no target N. Based on
+published counter-rotator counts and coverage, the expected yield is 15–20
+counter-rotators with valid measurements at 1.5 R_e.
+
+## Sample size rationale
+
+The power analysis is `analysis/c1_power.py`; its output is
+`results/c1_power.json`. It resamples the MaNGA twist distribution and
+Theil-Sen residuals (robust SD 46 km/s). It holds b at its MaNGA value under
+both hypotheses and uses P = 40 km/s.
+
+The table gives the probability that the Bayes factor favours the true
+hypothesis by more than 10, and, after the slash, the probability that it
+favours the wrong one by more than 10:
+
+| N_CR | H_C true | H_V true |
+|---|---|---|
+| 10 | 0.21 / 0.005 | 0.12 / 0.018 |
+| 15 | 0.33 / 0.002 | 0.28 / 0.018 |
+| 20 | 0.50 / 0.002 | 0.45 / 0.018 |
+| 25 | 0.60 / 0.002 | 0.56 / 0.027 |
+| 30 | 0.72 / 0.001 | 0.66 / 0.022 |
+
+At the expected N, a decisive result is about as likely as not. A wrong
+decisive result has a probability of 3% or less. This limitation is accepted
+and stated in advance. An inconclusive outcome will be reported as such,
+together with the interval on f.
+
+## Stopping rule
+
+The analysis is run once on the full released samples. If fewer than 10 CR have
+valid 1.5 R_e measurements, inference is not carried out. The primary
+quantities are then reported descriptively, and the result is declared
+underpowered.
+
+## Manipulated variables
+
+None.
+
+## Measured variables
+
+Per galaxy, all derived from survey products by the frozen pipeline:
+- stellar and gas kinematic PA, and ΔPA;
+- inclination from the photometric axis ratio, with intrinsic thickness
+  q0 = 0.2, and i ≥ 30° required;
+- R_e (arcsec, and kpc from the redshift distance);
+- stellar mass, morphological T-type (or [[SAMI visual class mapped to
+  T-type]]);
+- σ_* within 1 R_e, as the median of instrument-corrected stellar dispersion in
+  spaxels inside the 1 R_e ellipse;
+- in each ring, by harmonic fit (V_sys + c1 cos φ + s1 sin φ, requiring at least
+  3 azimuthal quadrants):
+  - stellar and gas V_rot and |V_R|;
+  - the median stellar and gas dispersion;
+  - the gas residual RMS;
+- gas twist t: the PA difference between gas inside and outside 1 R_e, each
+  needing at least 30 valid spaxels;
+- the drift factor k = R/h_R + R/h_σ² − ½, with h_R = R_e/1.678, h_σ² from a
+  log-linear fit to the ring dispersions, and k clipped to [0, 4].
+
+**Spaxel validity:**
+- survey quality mask clean;
+- velocity error ≤ 30 km/s;
+- gas: Hα S/N ≥ 5;
+- dispersions: instrument-corrected; gas below instrumental resolution set
+  to 0.
+
+**Ring validity:** at least [[20 for SAMI 0.5″ spaxels; 10 for CALIFA 1″
+spaxels]] valid spaxels, covering at least 3 quadrants. This keeps the minimum
+sky area per ring roughly constant.
+
+## Indices
+
+- D = (V_g² + k_g σ_g² − V_*² − k_* σ_*²)/(V_g + V_*), in km/s, at each ring.
+- s_i = median(D over the 3 controls of i) − D_i.
+- P = mean over the CR of Rζ_i. Rζ_i is evaluated at 1.5 R_e,i (kpc) for each
+  SPARC galaxy (Q < 3, i ≥ 30°) with |V_flat − V_c,*,i| < 30 km/s, and then
+  averaged:
+  - Rζ = d(R u)/dR;
+  - u = V_RAR − V_bar;
+  - the RAR uses g† = 1.2×10⁻¹⁰ m s⁻²;
+  - V_c,* = √(V_*² + k_* σ_*²) at 1 R_e.
+  - The code is `analysis/s_pred_rar.py` (`rar_profiles`) together with
+    `pred_rz` in `analysis/g1_manga_discriminant_exploratory.py`, unchanged.
+- f = a / P.
+
+## Statistical models
+
+**Primary.** The model is a Theil-Sen regression of s_i on t_i over all CR with
+valid 1.5 R_e measurements, with the central drift factor k:
+- The intercept is a = median(s − b t), where b is the median of the pairwise
+  slopes.
+- σ_a is the SD of a over 10,000 bootstrap resamples of the CR, with seed
+  20261002. Controls stay attached to their CR in each resample.
+- The Bayes factor of H_V against H_C is
+
+  BF = exp[(a² − (a − P)²) / (2 σ_a²)].
+
+- The point estimate and 95% bootstrap percentile interval of f = a / P are also
+  reported.
+
+**Matching covariates** (standardised):
+- log M_*;
+- T-type;
+- log σ_*(1 R_e);
+- inclination;
+- survey (exact match: SAMI CR are matched to SAMI controls, and CALIFA CR to
+  CALIFA controls).
+
+**Secondary analyses.** These are pre-specified and reported regardless of
+outcome, but none of them decides the verdict:
+1. As in the MaNGA run, S = median(D_CO) − median(D_CR) at 1.0 and 1.5 R_e,
+   with bootstrap SD, at k−1, k and k+1.
+2. b > 0, one-sided. This tests the conventional prediction that slowdown rises
+   with twist. The test is a bootstrap 95% lower bound on b.
+3. The primary BF and f at k−1 and k+1.
+4. The primary analysis for each survey separately.
+5. A pooled MaNGA + SAMI + CALIFA analysis. It is labelled as combining
+   exploratory and confirmatory data.
+6. The Spearman correlation of s_i with predicted Rζ_i. H_V predicts a
+   positive value.
+
+## Transformations
+
+None beyond the indices above. Twist is in degrees, from 0 to 180.
+
+## Inference criteria
+
+The following labels apply to the primary analysis at central k:
+
+| Bayes factor | Label |
+|---|---|
+| BF ≥ 10 | Strong evidence for H_V |
+| 3 ≤ BF < 10 | Moderate evidence for H_V |
+| 1/10 < BF ≤ 1/3 | Moderate evidence for H_C |
+| BF ≤ 1/10 | Strong evidence for H_C |
+| Between 1/3 and 3 | Inconclusive |
+
+- If the label at k−1 or k+1 is weaker than at central k, the weaker label is
+  reported as the headline.
+- Regardless of the label, the 95% upper bound on f is reported as a
+  constraint on any velocity-dependent contribution.
+
+## Data exclusion
+
+- Galaxies are excluded if they:
+  - are in MaNGA DR17;
+  - lack either velocity map;
+  - have a PA error above 20°;
+  - have i < 30°;
+  - have V_*(1 R_e) ≤ 40 km/s;
+  - are flagged as mergers or interacting in [[SAMI/CALIFA visual
+    classification, if available; otherwise no merger cut, stated as a
+    deviation from MaNGA]].
+- CR without a valid 1.5 R_e ring (for both stars and gas) or without a valid
+  twist are excluded from the primary analysis. They are counted in the
+  report.
+- There is no outlier removal; Theil-Sen is used for its robustness.
+
+## Missing data
+
+Missing catalogue covariates exclude a galaxy from matching. Missing rings
+exclude a galaxy only from analyses at that radius.
+
+## Exploratory analysis
+
+Anything not listed above will be labelled exploratory. That includes
+alternative radii, alternative velocity cuts, alternative matching, and models
+in which a depends on stellar mass.
+
+## Other
+
+**Code.**
+- Repository: [[GitHub URL]].
+- Frozen commit: [[hash]], tagged `c1-prereg`.
+- Archive: [[Zenodo DOI]].
+- Any deviation from this plan will be listed, dated and justified in
+  `preregistration/PREREG.md` and in the paper.
+
+**Disclosure.** The analysis code and this plan were developed with an AI coding
+assistant (Claude, Anthropic). All decisions are the author's.
