@@ -460,3 +460,34 @@ Matching and statistics are as in design (g).
 The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and not independent.
 
 **Recommended confirmatory test.** An independent sample (SAMI or CALIFA), pre-registered on OSF before any data are downloaded, restricted to fast rotators (V_* > 80 km/s), with 1.5 R_e as the primary radius.
+
+### 2026-10-02: EXPLORATORY discriminant analysis (informs the confirmatory pre-registration)
+
+**Method** (`analysis/g1_manga_discriminant_exploratory.py`). For each counter-rotator, slowdown s_i = median(D_CO) − D_CR,i at the central k, with V_* > 40 km/s.
+
+**Correlations.**
+- With the vortex-predicted R·ζ_i (RAR): ρ = −0.10 (1 R_e) and −0.18 (1.5 R_e). The slowdown does not track the predicted R·ζ.
+- With gas kinematic twist: ρ = +0.32 (p = 0.002, 1 R_e).
+- With σ_gas/V_c: ρ = +0.22 (p = 0.04, 1.5 R_e).
+- With radial flow: none.
+
+**Radial growth.** The slowdown is +5.3 km/s at 1 R_e and +17.3 at 1.5 R_e, a ratio of about 3.3. The vortex-predicted ratio is 1.28.
+
+**Twist split.** Median gas twist among the counter-rotators is 10.5°.
+
+| | 1 R_e (km/s) | 1.5 R_e (km/s) |
+|---|---|---|
+| Low-twist (N = 44) | −6.8 ± 9.3 | +8.8 ± 6.7 |
+| High-twist (N = 44 / 39) | +30.7 ± 12.4 | +30.0 ± 9.1 |
+| Vortex prediction, both halves | ~29–31 | ~38–40 |
+
+**Reading (exploratory, post hoc).**
+- The asymmetry is carried by twisted, i.e. warped, unsettled or mis-deprojected, counter-rotating gas.
+- Settled gas shows none. That is about 4σ below the vortex prediction at both radii.
+- This favours a conventional explanation (disequilibrium, warps, or inclination mismatch in the deprojection) over a velocity-dependent field.
+
+**Proposed confirmatory hypotheses for SAMI/CALIFA**, to be registered on OSF:
+- **Primary:** the slowdown in low-twist, fast-rotating counter-rotators at 1.5 R_e.
+  - The vortex reading predicts about R·ζ_pred.
+  - The conventional reading predicts about 0.
+- **Secondary:** the slowdown–twist correlation is positive.
