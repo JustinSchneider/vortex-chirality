@@ -92,7 +92,7 @@ for g in groups:
 check("6 variables, rank 3 -> exactly 3 Pi groups",
       len(names) - rank == 3 and len(groups) == 3)
 
-# The physically readable basis used in docs/theory.md:
+# The physically readable basis:
 Pi1 = dict(R_t=1, R_d=-1)
 Pi2 = dict(G=1, M_bar=1, a0=-1, R_d=-2)
 Pi3 = dict(M_BH=1, M_bar=-1)

@@ -28,8 +28,6 @@ A force that depends on the direction of motion treats stars and gas orbiting in
   - `c1_power.py`: power analysis for the confirmatory design.
 - **data/raw/**: SPARC tables (Lelli, McGaugh & Schombert 2016) and the author's earlier SPARC rotation-curve fit tables.
 - **data/processed/**: derived tables. MaNGA maps are not redistributed; they are fetched from the SDSS Science Archive Server.
-- **docs/theory.md**: hypotheses, derivations and the verdict for each test.
-- **manuscript/**: the paper, in preparation.
 
 ## Reproduce
 
