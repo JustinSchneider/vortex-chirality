@@ -491,3 +491,13 @@ The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and n
   - The vortex reading predicts about R·ζ_pred.
   - The conventional reading predicts about 0.
 - **Secondary:** the slowdown–twist correlation is positive.
+
+### 2026-10-02: C1 confirmatory test registered on OSF
+
+- **Registration:** https://osf.io/3dr29 (OSF Preregistration template). The text is in `preregistration/OSF_C1_confirmatory.md`.
+- **Design.** The proposal in the entry above was refined before registration:
+  - **Primary:** the Theil-Sen zero-twist intercept of the slowdown at 1.5 R_e, judged by a Bayes factor between H_V (a = P, the RAR-normalised prediction) and H_C (a = 0). The fraction f = a/P is reported as the estimand.
+  - **Secondary:** analyses 1–9 as listed in the registration.
+- **Frozen code:** commit f3cc6de9aa2296abdc0736f07143acb9deaea0a9 (tag `c1-prereg`), archived at https://doi.org/10.5281/zenodo.23112005. After the tag, only the text of the OSF form changed.
+- **Status of the data:** no map of any galaxy eligible for C1 has been accessed. The SAMI and CALIFA sample maps are downloaded only after the registration is approved.
+- **Allowed changes from here on:** only mechanical loader fixes found in the dry run, each logged here with a date before the full run.

@@ -7,7 +7,7 @@ A force that depends on the direction of motion treats stars and gas orbiting in
 ## Status
 
 - **Exploratory: MaNGA DR17.** 90 counter-rotators against 270 matched controls. The result is inconclusive as registered. Post hoc analysis shows that the counter-rotator "slowdown" follows the kinematic twist of the gas, not the predicted vortex amplitude.
-- **Confirmatory: SAMI DR3 + CALIFA (C1).** Being pre-registered on OSF. See [preregistration/OSF_C1_confirmatory.md](preregistration/OSF_C1_confirmatory.md).
+- **Confirmatory: SAMI DR3 + CALIFA (C1).** Pre-registered on OSF: https://osf.io/3dr29. The frozen code is tag `c1-prereg`, archived at https://doi.org/10.5281/zenodo.23112005. The registration text is in [preregistration/OSF_C1_confirmatory.md](preregistration/OSF_C1_confirmatory.md).
 
 [preregistration/PREREG.md](preregistration/PREREG.md) is the append-only, dated analysis log. It records every amendment, the PA-convention bug that invalidated the first MaNGA run, and the corrected results. These dates are self-recorded and not independently timestamped. The C1 plan is timestamped by its OSF registration.
 
