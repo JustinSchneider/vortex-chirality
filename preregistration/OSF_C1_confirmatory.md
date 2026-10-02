@@ -121,29 +121,89 @@ The author has read:
 - the SAMI misalignment study of Ristea et al. (2022), which reports counts of
   misaligned and counter-rotating galaxies but no comparison of gas and
   stellar circular speeds;
-- [[confirm any CALIFA misalignment paper read]].
+- the CALIFA kinematic-alignment studies of Barrera-Ballesteros et al. (2014,
+  2015) and García-Lorenzo et al. (2015), which report position angles and
+  alignment, but not gas-versus-stellar circular-speed differences;
+- the SAMI DR3 and CALIFA data-product documentation, including table and
+  column names (but no values).
+
+**Incidental exposures, disclosed for completeness.** Neither one reveals
+rotation or circular-speed amplitudes.
+1. While checking the structure of Ristea et al. (2022) Table D1, the first
+   four data rows were displayed. They show the CATID, stellar and gas PA,
+   SFR, stellar mass, and misalignment cause.
+2. The SAMI documentation's example-query page states the number of rows that
+   a slow-rotator query returns.
 
 The author has also analysed MaNGA DR17 with the same pipeline. Those
 exploratory results motivate the hypotheses and the power analysis.
+
+The pipeline measures every kinematic PA itself. The published PAs (the SAMI
+catalogue PA_STELKIN and PA_GASKIN, Ristea et al. Table D1, and the
+Barrera-Ballesteros tables) are not used for selection. They are used only in
+secondary analysis 7.
 
 Galaxies observed by MaNGA are excluded, so no counter-rotator can be in both
 samples.
 
 ## Data collection procedures
 
-**SAMI DR3** (Croom et al. 2021): [[stellar velocity/dispersion map product
-name, pPXF variant, binning]]; [[gas velocity/dispersion product name and
-component]]; [[catalogue tables for R_e, ellipticity, PA, M_*, morphology]].
-Retrieved from Data Central [[method]].
+**SAMI DR3** (Croom et al. 2021). Maps are retrieved through the Data
+Central bulk-download service; catalogues come through its TAP service.
+- **Stellar maps:** stellar velocity and dispersion. The two-moment pPXF fit,
+  default (unbinned) 0.5″ spaxels.
+  - Extensions: VEL, VEL_ERR, SN; and SIG, SIG_ERR.
+  - Valid velocity spaxels: VEL_ERR < 30 km/s and SN > 3.
+  - Valid dispersion spaxels: SIG_ERR < 0.1 SIG + 25, SN > 3, SIG > 35 km/s,
+    and VEL_ERR < 30 km/s. These are the SAMI-recommended cuts (van de Sande
+    et al. 2017; Croom et al. 2021).
+- **Gas maps:** ionised-gas velocity and dispersion. The LZIFU "1-comp"
+  (single-Gaussian) fit, which ties the velocity across all strong lines.
+  - Extensions: primary plus V_ERR; and primary plus VDISP_ERR.
+  - Valid gas spaxels: V_ERR ≤ 30 km/s and Hα S/N ≥ 5, using the 1-comp Hα
+    flux and its error.
+- **Catalogues:**
+  - `sami_dr3.InputCatGAMADR3` and `InputCatClustersDR3` (whichever
+    applies): z, stellar mass, BAD_CLASS.
+  - `sami_dr3.MGEPhotomUnregDR3`: R_e = ReMGE, ε = epsMGE_Re, photometric
+    PA = PAMGE.
+  - `sami_dr3.VisualMorphologyDR3`: TYPE.
+  - `sami_dr3.CubeObs`: ISBEST = 1 selects one cube per galaxy.
+- **Not used:** the SAMI kinematic tables (`samiDR3Stelkin`,
+  `samiDR3gaskinPA`) are not queried before the full run.
 
-**CALIFA DR3** (Sánchez et al. 2016):
-- Stellar kinematics: [[product; V1200 setup; Falcon-Barroso et al. 2017]].
-- Gas kinematics: [[Pipe3D H-alpha velocity and dispersion planes; V500
-  setup]].
-- Catalogue quantities: [[source]].
+**CALIFA** (Sánchez et al. 2016).
+- **Stellar kinematics:** the V1200 products of Falcón-Barroso et al.
+  (2017), about 300 galaxies: `<name>.CALIFA.V1200.stekin.fits`.
+  - These are binary tables of Voronoi-binned pPXF fits. Each spaxel (X, Y)
+    takes the velocity Vp ± DVp and the dispersion Sp ± DSp of its bin.
+  - Valid spaxels: QC flag good; DVp ≤ 30 km/s.
+- **Gas kinematics:** the eCALIFA pyPipe3D V500 products (Sánchez et al.
+  2023), ELINES extension.
+  - Channel 0 is the Hα velocity.
+  - Channel 1 is the Hα FWHM in Å, converted to an intrinsic dispersion:
+    σ = c·√[(FWHM / 2.354 / λ_Hα)² − (2.6 Å / λ_Hα)²].
+  - Hα flux and its error come from FLUX_ELINES.
+  - Valid gas spaxels: Hα S/N ≥ 5; velocity error ≤ 30 km/s.
+- **Catalogue quantities:** R_e, ellipticity, photometric PA, stellar mass,
+  and Hubble type, all from the CALIFA DR3 / eCALIFA catalogues
+  [[exact table, confirmed during loader writing]].
+- **Sample:** only galaxies with both a stellar and a gas product enter.
+- **Gas–stellar map registration:** the two maps are put on a common frame
+  using the WCS and header reference pixel (XCEN, YCEN for the stellar
+  product). If they cannot be registered to within 1″, the galaxy is
+  excluded.
+
+**Instrumental dispersion.** The pPXF stellar dispersions (both surveys) and
+the LZIFU gas dispersions (SAMI; Zhou et al. 2017) are taken to be intrinsic,
+i.e. instrument-corrected. Any residual error in this correction enters
+counter-rotators and their matched controls alike. Because it appears only
+through the k σ² term, it largely cancels in s.
 
 **Overlap exclusion:**
-- Any SAMI or CALIFA galaxy within 3″ of a MaNGA DR17 target is removed.
+- Any SAMI or CALIFA galaxy within 3″ of a MaNGA DR17 target is removed. The
+  published overlaps are about 74 SAMI–MaNGA galaxies (Fraser-McKelvie et
+  al. 2021) and a few tens of CALIFA–MaNGA galaxies.
 - Galaxies in both SAMI and CALIFA are kept once, from CALIFA, because its
   wider field covers 1.5 R_e more often.
 
@@ -195,8 +255,13 @@ Per galaxy, all derived from survey products by the frozen pipeline:
 - inclination from the photometric axis ratio, with intrinsic thickness
   q0 = 0.2, and i ≥ 30° required;
 - R_e (arcsec, and kpc from the redshift distance);
-- stellar mass, morphological T-type (or [[SAMI visual class mapped to
-  T-type]]);
+- stellar mass;
+- morphology on a coarse common scale from 0 to 3:
+  - SAMI: TYPE as published (0 E, 0.5 E/S0, 1 S0, 1.5, 2 early spiral, 2.5,
+    3 late spiral/irregular). TYPE 5 or −9 counts as missing.
+  - CALIFA: Hubble type mapped as E = 0, S0 = 1, Sa–Sb = 2, Sbc and later
+    = 3.
+  - Morphology is used only for matching, which happens within a survey.
 - σ_* within 1 R_e, as the median of instrument-corrected stellar dispersion in
   spaxels inside the 1 R_e ellipse;
 - in each ring, by harmonic fit (V_sys + c1 cos φ + s1 sin φ, requiring at least
@@ -216,9 +281,10 @@ Per galaxy, all derived from survey products by the frozen pipeline:
 - dispersions: instrument-corrected; gas below instrumental resolution set
   to 0.
 
-**Ring validity:** at least [[20 for SAMI 0.5″ spaxels; 10 for CALIFA 1″
-spaxels]] valid spaxels, covering at least 3 quadrants. This keeps the minimum
-sky area per ring roughly constant.
+**Ring validity:** valid spaxels must cover at least 5 arcsec² (20 SAMI
+spaxels of 0.5″, or 5 CALIFA spaxels of 1″) and at least 3 azimuthal
+quadrants. This matches the MaNGA rule of 20 spaxels of 0.5″. For CALIFA
+stellar maps, a Voronoi bin counts once per spaxel it covers.
 
 ## Indices
 
@@ -252,7 +318,7 @@ valid 1.5 R_e measurements, with the central drift factor k:
 
 **Matching covariates** (standardised):
 - log M_*;
-- T-type;
+- morphology (0–3 scale);
 - log σ_*(1 R_e);
 - inclination;
 - survey (exact match: SAMI CR are matched to SAMI controls, and CALIFA CR to
@@ -270,6 +336,13 @@ outcome, but none of them decides the verdict:
    exploratory and confirmatory data.
 6. The Spearman correlation of s_i with predicted Rζ_i. H_V predicts a
    positive value.
+7. The agreement of the pipeline's CR classification with published PAs: the
+   SAMI catalogue PA_STELKIN/PA_GASKIN, Ristea et al. (2022) Table D1, and
+   Barrera-Ballesteros et al. (2014, 2015). The primary analysis is then
+   repeated on the CR on which both agree.
+8. The MaNGA exploratory primary statistic (intercept a, BF, f), recomputed
+   without the Galaxy Zoo merger cut. This shows the size of the effect of
+   omitting the merger cut.
 
 ## Transformations
 
@@ -300,9 +373,13 @@ The following labels apply to the primary analysis at central k:
   - have a PA error above 20°;
   - have i < 30°;
   - have V_*(1 R_e) ≤ 40 km/s;
-  - are flagged as mergers or interacting in [[SAMI/CALIFA visual
-    classification, if available; otherwise no merger cut, stated as a
-    deviation from MaNGA]].
+  - fail the survey's catalogue-level quality flags (SAMI: a BAD_CLASS
+    value marking a bad target [[values from InputCat docs]], or not
+    ISBEST; CALIFA: the
+    survey's own exclusion flags).
+- Neither survey has a merger or disturbance flag equivalent to Galaxy Zoo's,
+  so no merger cut is applied. This is a deliberate deviation from the
+  MaNGA run. Secondary analysis 8 measures its effect.
 - CR without a valid 1.5 R_e ring (for both stars and gas) or without a valid
   twist are excluded from the primary analysis. They are counted in the
   report.
