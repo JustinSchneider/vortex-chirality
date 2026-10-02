@@ -501,3 +501,8 @@ The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and n
 - **Frozen code:** commit f3cc6de9aa2296abdc0736f07143acb9deaea0a9 (tag `c1-prereg`), archived at https://doi.org/10.5281/zenodo.23112005. After the tag, only the text of the OSF form changed.
 - **Status of the data:** no map of any galaxy eligible for C1 has been accessed. The SAMI and CALIFA sample maps are downloaded only after the registration is approved.
 - **Allowed changes from here on:** only mechanical loader fixes found in the dry run, each logged here with a date before the full run.
+
+### 2026-10-02: C1 registration approved; data access begins
+
+- OSF registration https://osf.io/3dr29 was approved by the author.
+- Only after that were the C1 sample maps requested: the SAMI bulk download (Data Central) and the CALIFA download (`analysis/c1_fetch_califa.py`, which only downloads, with no measurement and no output beyond progress counts).
