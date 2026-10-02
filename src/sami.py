@@ -3,8 +3,8 @@
 Catalogues (non-kinematic columns only) were fetched from the Data Central
 TAP service into data/sami/*.csv. Maps are the Data Central bulk-download
 products, unpacked under data/sami/maps/ (any directory layout):
-  stars: two-moment pPXF, default 0.5" spaxels, velocity (VEL, VEL_ERR, SN)
-         and dispersion (SIG, SIG_ERR, SN);
+  stars: two-moment pPXF, default 0.5" spaxels, velocity (VEL, VEL_ERR, SNR)
+         and dispersion (SIG, SIG_ERR, SNR);
   gas:   LZIFU 1-comp velocity (+ V_ERR), dispersion (+ VDISP_ERR) and
          H-alpha flux (+ error) maps.
 DR3 file names are not documented, so files are located by keyword
@@ -111,7 +111,7 @@ def available(catid):
 def galaxy_arrays(catid, z=None, session=None):
     """Masked stellar and gas maps; format of g1_manga_test.galaxy_arrays."""
     f = {p: find_file(catid, p) for p in FILE_KEYS}
-    sv, sve, ssn = _read(f["stellar_vel"]), _ext(f["stellar_vel"], "VEL_ERR"), _ext(f["stellar_vel"], "SN")
+    sv, sve, ssn = _read(f["stellar_vel"]), _ext(f["stellar_vel"], "VEL_ERR"), _ext(f["stellar_vel"], "SNR")
     ss, sse = _read(f["stellar_sig"]), _ext(f["stellar_sig"], "SIG_ERR")
     gv, gve = _read(f["gas_vel"]), _ext(f["gas_vel"], "V_ERR")
     gs = _read(f["gas_sig"])

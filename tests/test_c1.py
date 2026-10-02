@@ -73,3 +73,19 @@ def test_califa_overlap_galaxy_matches_manga():
     for pa in (ps, pg):
         d = abs(pa - 309) % 360
         assert min(d, 360 - d) < 20
+
+
+def test_sami_overlap_galaxy_matches_manga():
+    """Orientation/format check on a MaNGA-overlap galaxy (excluded from C1)."""
+    from analysis.g1_manga_select import receding_pa
+    if not sami.available("517164"):
+        pytest.skip("overlap galaxy not downloaded")
+    maps, x, y, s_ok, g_ok = sami.galaxy_arrays("517164")
+    dec = np.zeros_like(s_ok)
+    dec[::2, ::2] = True
+    ps = receding_pa(x[s_ok & dec], y[s_ok & dec], maps["vs"][s_ok & dec], maps["evs"][s_ok & dec])[0]
+    pg = receding_pa(x[g_ok & dec], y[g_ok & dec], maps["vg"][g_ok & dec], maps["evg"][g_ok & dec])[0]
+    # MaNGA 11754-1901: both 83 deg
+    for pa in (ps, pg):
+        d = abs(pa - 83) % 360
+        assert min(d, 360 - d) < 20

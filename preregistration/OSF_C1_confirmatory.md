@@ -136,8 +136,9 @@ rotation or circular-speed amplitudes.
 3. The eCALIFA catalogue files contain integrated kinematic columns (Vmax,
    vel_sigma_Re, Lambda_Re, and others). The files were downloaded and their
    column names listed, but those columns were never read, printed or used.
-4. For the format check, CALIFA maps of galaxies that are also in MaNGA (and
-   therefore excluded from C1) were downloaded and inspected.
+4. For the format check, maps of galaxies that are also in MaNGA (and
+   therefore excluded from C1) were downloaded and inspected: CALIFA
+   UGC 08107 and SAMI 517164.
 
 The author has also analysed MaNGA DR17 with the same pipeline. Those
 exploratory results motivate the hypotheses and the power analysis.
@@ -156,14 +157,20 @@ samples.
 Central bulk-download service; catalogues come through its TAP service.
 - **Stellar maps:** stellar velocity and dispersion. The two-moment pPXF fit,
   default (unbinned) 0.5″ spaxels.
-  - Extensions: VEL, VEL_ERR, SN; and SIG, SIG_ERR.
-  - Valid velocity spaxels: VEL_ERR < 30 km/s and SN > 3.
-  - Valid dispersion spaxels: SIG_ERR < 0.1 SIG + 25, SN > 3, SIG > 35 km/s,
+  - Files `<CATID>_A_stellar-velocity_default_two-moment.fits` and
+    `..._stellar-velocity-dispersion_default_two-moment.fits`. Extensions:
+    VEL, VEL_ERR, SNR; and SIG, SIG_ERR, SNR.
+  - Valid velocity spaxels: VEL_ERR < 30 km/s and SNR > 3.
+  - Valid dispersion spaxels: SIG_ERR < 0.1 SIG + 25, SNR > 3, SIG > 35 km/s,
     and VEL_ERR < 30 km/s. These are the SAMI-recommended cuts (van de Sande
     et al. 2017; Croom et al. 2021).
 - **Gas maps:** ionised-gas velocity and dispersion. The LZIFU "1-comp"
   (single-Gaussian) fit, which ties the velocity across all strong lines.
-  - Extensions: primary plus V_ERR; and primary plus VDISP_ERR.
+  - Files `..._gas-velocity_default_1-comp.fits` (primary plus V_ERR),
+    `..._gas-vdisp_default_1-comp.fits` (primary plus VDISP_ERR) and
+    `..._Halpha_default_1-comp.fits` (plane 0, the total flux, plus
+    HALPHA_ERR). All are 50×50 maps with 0.5″ spaxels, centred on the
+    galaxy (CRPIX 25.5).
   - Valid gas spaxels: V_ERR ≤ 30 km/s and Hα S/N ≥ 5, using the 1-comp Hα
     flux and its error.
 - **Catalogues** (TAP; non-kinematic columns only; copies in `data/sami/`):
@@ -237,8 +244,8 @@ costs no blinding. Their stellar and gas PAs must agree with MaNGA's to within
 - CALIFA, UGC 08107 (MaNGA 11761-12705): stellar PA 300°, gas PA 309°,
   against MaNGA's 309° and 309°. This check is a unit test
   (`tests/test_c1.py`).
-- SAMI: the same check runs on one SAMI–MaNGA galaxy before the code is
-  frozen.
+- SAMI, CATID 517164 (MaNGA 11754-1901): stellar PA 85°, gas PA 83°, against
+  MaNGA's 83° and 83°. This check is also a unit test.
 
 **Instrumental dispersion.** The pPXF stellar dispersions (both surveys) and
 the LZIFU gas dispersions (SAMI; Zhou et al. 2017) are taken to be intrinsic,
