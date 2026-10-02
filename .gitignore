@@ -16,3 +16,6 @@ manuscript/*.synctex.gz
 manuscript/*.fdb_latexmk
 manuscript/*.fls
 manuscript/main.pdf
+data/califa/maps/
+data/sami/maps/
+data/processed/c1_meas.csv

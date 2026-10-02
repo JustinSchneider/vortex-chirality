@@ -1,8 +1,7 @@
 # OSF Preregistration: confirmatory chirality test C1 (SAMI DR3 + CALIFA DR3)
 
 DRAFT, 2026-10-02. Sections follow the fields of the OSF "OSF Preregistration"
-template, in order. Items marked [[...]] await the data-product documentation
-check and must be resolved before submission.
+template, in order. Items marked [[...]] must be filled in before submission.
 
 ---
 
@@ -134,6 +133,11 @@ rotation or circular-speed amplitudes.
    SFR, stellar mass, and misalignment cause.
 2. The SAMI documentation's example-query page states the number of rows that
    a slow-rotator query returns.
+3. The eCALIFA catalogue files contain integrated kinematic columns (Vmax,
+   vel_sigma_Re, Lambda_Re, and others). The files were downloaded and their
+   column names listed, but those columns were never read, printed or used.
+4. For the format check, CALIFA maps of galaxies that are also in MaNGA (and
+   therefore excluded from C1) were downloaded and inspected.
 
 The author has also analysed MaNGA DR17 with the same pipeline. Those
 exploratory results motivate the hypotheses and the power analysis.
@@ -162,37 +166,79 @@ Central bulk-download service; catalogues come through its TAP service.
   - Extensions: primary plus V_ERR; and primary plus VDISP_ERR.
   - Valid gas spaxels: V_ERR ≤ 30 km/s and Hα S/N ≥ 5, using the 1-comp Hα
     flux and its error.
-- **Catalogues:**
-  - `sami_dr3.InputCatGAMADR3` and `InputCatClustersDR3` (whichever
-    applies): z, stellar mass, BAD_CLASS.
-  - `sami_dr3.MGEPhotomUnregDR3`: R_e = ReMGE, ε = epsMGE_Re, photometric
-    PA = PAMGE.
+- **Catalogues** (TAP; non-kinematic columns only; copies in `data/sami/`):
+  - `sami_dr3.InputCatGAMADR3` and `InputCatClustersDR3`, whichever applies:
+    - position;
+    - redshift: z_tonry (flow-corrected) where available, otherwise z_spec;
+    - R_e = r_e (Sérsic, major axis, as for MaNGA);
+    - ellipticity `ellip`, with b/a = 1 − ellip;
+    - stellar mass `Mstar`;
+    - BAD_CLASS.
   - `sami_dr3.VisualMorphologyDR3`: TYPE.
-  - `sami_dr3.CubeObs`: ISBEST = 1 selects one cube per galaxy.
+  - `sami_dr3.CubeObs`: ISBEST = 1 selects one cube per galaxy; warning flags.
+  - Angular scale: flat ΛCDM with H0 = 70 and Ωm = 0.3.
+- **Quality.** A galaxy is kept only if:
+  - BAD_CLASS ∈ {0, 5, 8} (the "good target" values; Croom et al. 2021,
+    Sect. 2.4);
+  - WARNSTAR, WARNSK2M, WARNSKER, WARNWCS, WARNEMFT and WARNMULT are all 0.
+- **Map orientation.** Maps are taken as centred on the galaxy (the WARNWCS
+  galaxies are excluded).
+- **Locating files.** DR3 file names are not documented, so each product is
+  located by keywords in the file name, and the match must be unique (code:
+  `src/sami.FILE_KEYS`).
 - **Not used:** the SAMI kinematic tables (`samiDR3Stelkin`,
   `samiDR3gaskinPA`) are not queried before the full run.
 
-**CALIFA** (Sánchez et al. 2016).
+**CALIFA** (Sánchez et al. 2016; eCALIFA, Sánchez et al. 2023).
 - **Stellar kinematics:** the V1200 products of Falcón-Barroso et al.
-  (2017), about 300 galaxies: `<name>.CALIFA.V1200.stekin.fits`.
-  - These are binary tables of Voronoi-binned pPXF fits. Each spaxel (X, Y)
-    takes the velocity Vp ± DVp and the dispersion Sp ± DSp of its bin.
-  - Valid spaxels: QC flag good; DVp ≤ 30 km/s.
-- **Gas kinematics:** the eCALIFA pyPipe3D V500 products (Sánchez et al.
-  2023), ELINES extension.
-  - Channel 0 is the Hα velocity.
-  - Channel 1 is the Hα FWHM in Å, converted to an intrinsic dispersion:
-    σ = c·√[(FWHM / 2.354 / λ_Hα)² − (2.6 Å / λ_Hα)²].
-  - Hα flux and its error come from FLUX_ELINES.
-  - Valid gas spaxels: Hα S/N ≥ 5; velocity error ≤ 30 km/s.
-- **Catalogue quantities:** R_e, ellipticity, photometric PA, stellar mass,
-  and Hubble type, all from the CALIFA DR3 / eCALIFA catalogues
-  [[exact table, confirmed during loader writing]].
-- **Sample:** only galaxies with both a stellar and a gas product enter.
-- **Gas–stellar map registration:** the two maps are put on a common frame
-  using the WCS and header reference pixel (XCEN, YCEN for the stellar
-  product). If they cannot be registered to within 1″, the galaxy is
-  excluded.
+  (2017), 300 galaxies: `<name>.CALIFA.V1200.stekin.fits`.
+  - These are binary tables of Voronoi-binned pPXF fits, with one row per 1″
+    spaxel. X and Y are in arcsec, relative to the galaxy centre.
+  - Each spaxel carries the velocity Vp ± DVp and the dispersion Sp ± DSp of
+    its bin.
+  - Valid velocity spaxels: DVp ≤ 30 km/s.
+  - Valid dispersion spaxels: additionally DSp < 0.1 Sp + 25 and
+    Sp > 35 km/s. This mirrors the SAMI rule.
+  - The QC column is a continuous fit-residual measure, not a flag, so it is
+    not used.
+- **Gas kinematics:** the eCALIFA pyPipe3D V500 v2.3 cubes, 0.5″ spaxels.
+  - FLUX_ELINES planes "vel Ha", "e_vel Ha", "flux Ha" and "e_flux Ha" give
+    the velocity, its error, the flux and its error.
+  - ELINES channel 1 is the Hα FWHM in Å, including instrumental width. It is
+    converted to an intrinsic dispersion:
+    σ = c·√[(FWHM / 2.354 / λ)² − (2.6 Å / λ)²], with λ = 6562.8 (1+z) Å.
+    Values below the instrumental width are set to 0.
+  - Valid gas spaxels:
+    - Hα S/N ≥ 5;
+    - 0 < velocity error ≤ 30 km/s;
+    - outside the Gaia foreground-star mask.
+- **Catalogue quantities** come from the eCALIFA tables
+  (`galaxies_properties.fits`: position, z, Hubble type, QC_flag;
+  `eCALIFA.pyPipe3D.fits`: Re_arc, ellip, log_Mass, DA). Two columns are not
+  what their names suggest; both readings are verified on all 895 rows:
+  - `ellip` is an eccentricity, since it tracks `ecc` with r = 0.998. So
+    b/a = √(1 − ellip²).
+  - `DA` is the angular scale in kpc/arcsec, since it equals Re_kpc / Re_arc.
+  - Galaxies with QC_flag = 1 are excluded.
+- **Sample:** a galaxy enters only if its stellar-kinematics file name matches
+  an eCALIFA cube name (280 of the 300).
+- **Common grid.** Stars and gas share the gas 0.5″ grid:
+  - Its origin is the catalogue galaxy position, located through the cube
+    WCS.
+  - Each grid spaxel takes the values of the nearest 1″ stellar spaxel within
+    0.75″.
+  - The axes follow the MaNGA pipeline: x along increasing column, y along
+    increasing row.
+
+**Format check on excluded galaxies.** Readers are checked on galaxies that
+are also in MaNGA. Those galaxies are excluded from C1, so inspecting them
+costs no blinding. Their stellar and gas PAs must agree with MaNGA's to within
+20°.
+- CALIFA, UGC 08107 (MaNGA 11761-12705): stellar PA 300°, gas PA 309°,
+  against MaNGA's 309° and 309°. This check is a unit test
+  (`tests/test_c1.py`).
+- SAMI: the same check runs on one SAMI–MaNGA galaxy before the code is
+  frozen.
 
 **Instrumental dispersion.** The pPXF stellar dispersions (both surveys) and
 the LZIFU gas dispersions (SAMI; Zhou et al. 2017) are taken to be intrinsic,
@@ -201,11 +247,11 @@ counter-rotators and their matched controls alike. Because it appears only
 through the k σ² term, it largely cancels in s.
 
 **Overlap exclusion:**
-- Any SAMI or CALIFA galaxy within 3″ of a MaNGA DR17 target is removed. The
-  published overlaps are about 74 SAMI–MaNGA galaxies (Fraser-McKelvie et
-  al. 2021) and a few tens of CALIFA–MaNGA galaxies.
-- Galaxies in both SAMI and CALIFA are kept once, from CALIFA, because its
-  wider field covers 1.5 R_e more often.
+- Any SAMI or CALIFA galaxy within 5″ of any MaNGA DR17 target is removed.
+  The radius is 5″ rather than 3″ because CALIFA–MaNGA catalogue offsets
+  reach 3″. This removes 101 galaxies from the parent sample.
+- Galaxies in both SAMI and CALIFA (within 5″) are kept once, from CALIFA,
+  because its wider field covers 1.5 R_e more often.
 
 ## Sample size
 
@@ -253,7 +299,7 @@ None.
 Per galaxy, all derived from survey products by the frozen pipeline:
 - stellar and gas kinematic PA, and ΔPA;
 - inclination from the photometric axis ratio, with intrinsic thickness
-  q0 = 0.2, and i ≥ 30° required;
+  q0 = 0.2; 30° ≤ i ≤ 80° required, as in the MaNGA run;
 - R_e (arcsec, and kpc from the redshift distance);
 - stellar mass;
 - morphology on a coarse common scale from 0 to 3:
@@ -281,10 +327,15 @@ Per galaxy, all derived from survey products by the frozen pipeline:
 - dispersions: instrument-corrected; gas below instrumental resolution set
   to 0.
 
-**Ring validity:** valid spaxels must cover at least 5 arcsec² (20 SAMI
-spaxels of 0.5″, or 5 CALIFA spaxels of 1″) and at least 3 azimuthal
-quadrants. This matches the MaNGA rule of 20 spaxels of 0.5″. For CALIFA
-stellar maps, a Voronoi bin counts once per spaxel it covers.
+**Ring validity:** at least 20 valid spaxels of 0.5″ (5 arcsec²), covering
+at least 3 azimuthal quadrants. This is the MaNGA rule; all maps are on
+0.5″ grids.
+
+**σ_*(1 R_e)** is the median valid stellar dispersion inside the deprojected
+1 R_e ellipse, requiring at least 5 spaxels.
+
+**Kinematic PAs** use every second spaxel in x and y, with at least 50 valid
+spaxels, as in MaNGA.
 
 ## Indices
 
@@ -323,6 +374,10 @@ valid 1.5 R_e measurements, with the central drift factor k:
 - inclination;
 - survey (exact match: SAMI CR are matched to SAMI controls, and CALIFA CR to
   CALIFA controls).
+- If a survey's co-rotating pool is smaller than 3 × its CR count, its CR are
+  not matched and are excluded. This is reported.
+- s_i uses the median D over those of its 3 controls that have a valid ring
+  at that radius. If none does, s_i is missing.
 
 **Secondary analyses.** These are pre-specified and reported regardless of
 outcome, but none of them decides the verdict:
@@ -336,10 +391,9 @@ outcome, but none of them decides the verdict:
    exploratory and confirmatory data.
 6. The Spearman correlation of s_i with predicted Rζ_i. H_V predicts a
    positive value.
-7. The agreement of the pipeline's CR classification with published PAs: the
-   SAMI catalogue PA_STELKIN/PA_GASKIN, Ristea et al. (2022) Table D1, and
-   Barrera-Ballesteros et al. (2014, 2015). The primary analysis is then
-   repeated on the CR on which both agree.
+7. The agreement of the pipeline's SAMI CR classification with the SAMI DR3
+   catalogue PAs (PA_STELKIN, PA_GASKIN): the primary analysis is repeated
+   on the CALIFA CR plus the SAMI CR whose published ΔPA also exceeds 150°.
 8. The MaNGA exploratory primary statistic (intercept a, BF, f), recomputed
    without the Galaxy Zoo merger cut. This shows the size of the effect of
    omitting the merger cut.
@@ -368,15 +422,15 @@ The following labels apply to the primary analysis at central k:
 ## Data exclusion
 
 - Galaxies are excluded if they:
-  - are in MaNGA DR17;
-  - lack either velocity map;
+  - are within 5″ of a MaNGA DR17 target;
+  - lack either velocity map (SAMI files must match uniquely);
   - have a PA error above 20°;
-  - have i < 30°;
-  - have V_*(1 R_e) ≤ 40 km/s;
-  - fail the survey's catalogue-level quality flags (SAMI: a BAD_CLASS
-    value marking a bad target [[values from InputCat docs]], or not
-    ISBEST; CALIFA: the
-    survey's own exclusion flags).
+  - have i < 30° or i > 80°;
+  - have V_*(1 R_e) ≤ 40 km/s, or no valid stellar ring at 1 R_e;
+  - lack a matching covariate (including SAMI TYPE 5 or −9, and CALIFA
+    types outside the morphology map);
+  - fail the catalogue-level quality flags listed under "Data collection
+    procedures".
 - Neither survey has a merger or disturbance flag equivalent to Galaxy Zoo's,
   so no merger cut is applied. This is a deliberate deviation from the
   MaNGA run. Secondary analysis 8 measures its effect.
@@ -402,6 +456,13 @@ in which a depends on stellar mass.
 - Repository: https://github.com/JustinSchneider/vortex-chirality.
 - Frozen commit: [[hash]], tagged `c1-prereg`.
 - Archive: [[Zenodo DOI]].
+- Entry points:
+  - `analysis/c1_test.py select`: PAs only.
+  - `analysis/c1_test.py dry`: counts only.
+  - `analysis/c1_test.py run`: the registered analysis, run once.
+  - `analysis/c1_secondary.py {5,7,8}`: secondary analyses.
+- Supporting code: readers `src/sami.py` and `src/califa.py`; measurement
+  `src/manga_measure.py` (unchanged from the MaNGA run).
 - Any deviation from this plan will be listed, dated and justified in
   `preregistration/PREREG.md` and in the paper.
 
