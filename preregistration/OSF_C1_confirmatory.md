@@ -94,8 +94,9 @@ This is a case-control comparison, run in the same way on each survey:
    - Counter-rotators (CR): ΔPA > 150°.
    - Co-rotating pool (CO): ΔPA < 30°.
    - Both groups also require PA errors ≤ 20° for both components.
-3. **Match controls.** Each CR gets 3 CO controls, chosen by greedy
-   nearest-neighbour matching without replacement on standardised covariates.
+3. **Match controls.** Each CR gets 3 CO controls (fewer only under the
+   fallback rule in "Statistical models"), chosen by greedy nearest-neighbour
+   matching without replacement on standardised covariates.
    Seed 20261002, the same algorithm as the MaNGA run.
 4. **Measure rings.** All CR and controls are measured in elliptical rings at
    0.5, 0.75, 1.0, 1.25 and 1.5 R_e, each 0.25 R_e wide.
@@ -285,7 +286,10 @@ favours the wrong one by more than 10:
 | 25 | 0.60 / 0.002 | 0.56 / 0.027 |
 | 30 | 0.72 / 0.001 | 0.66 / 0.022 |
 
-At the expected N, a decisive result is about as likely as not. A wrong
+The sample is not chosen: it is every eligible galaxy in the public SAMI DR3
+and CALIFA releases. No larger public integral-field sample independent of
+MaNGA exists at present. At the expected N, a decisive result is about as
+likely as not. A wrong
 decisive result has a probability of 3% or less. This limitation is accepted
 and stated in advance. An inconclusive outcome will be reported as such,
 together with the interval on f.
@@ -367,9 +371,13 @@ valid 1.5 R_e measurements, with the central drift factor k:
   slopes.
 - σ_a is the SD of a over 10,000 bootstrap resamples of the CR, with seed
   20261002. Controls stay attached to their CR in each resample.
-- The Bayes factor of H_V against H_C is
+- The evidence is a Bayes factor between two point hypotheses, H_V (a = P)
+  and H_C (a = 0). With equal prior weight on the two points and a Gaussian
+  likelihood for the intercept, it reduces to the likelihood ratio
 
-  BF = exp[(a² − (a − P)²) / (2 σ_a²)].
+  BF = exp[(a² − (a − P)²) / (2 σ_a²)],
+
+  using the bootstrap σ_a as a plug-in standard error.
 
 - The point estimate and 95% bootstrap percentile interval of f = a / P are also
   reported.
@@ -381,9 +389,11 @@ valid 1.5 R_e measurements, with the central drift factor k:
 - inclination;
 - survey (exact match: SAMI CR are matched to SAMI controls, and CALIFA CR to
   CALIFA controls).
-- If a survey's co-rotating pool is smaller than 3 × its CR count, its CR are
-  not matched and are excluded. This is reported.
-- s_i uses the median D over those of its 3 controls that have a valid ring
+- **Fallback rule.** If a survey's co-rotating pool is smaller than 3 × its CR
+  count, every CR in that survey gets 2 controls. If the pool is smaller than
+  2 × its CR count, every CR gets 1 control. Only if the pool is smaller than
+  its CR count are that survey's CR excluded. The ratio used is reported.
+- s_i uses the median D over those of its controls that have a valid ring
   at that radius. If none does, s_i is missing.
 
 **Secondary analyses.** These are pre-specified and reported regardless of
@@ -391,7 +401,9 @@ outcome, but none of them decides the verdict:
 1. As in the MaNGA run, S = median(D_CO) − median(D_CR) at 1.0 and 1.5 R_e,
    with bootstrap SD, at k−1, k and k+1.
 2. b > 0, one-sided. This tests the conventional prediction that slowdown rises
-   with twist. The test is a bootstrap 95% lower bound on b.
+   with twist. The test uses the one-sided 95% lower bound on b, i.e. the 5th
+   percentile of the bootstrap distribution of b. The prediction holds if that
+   bound is above 0.
 3. The primary BF and f at k−1 and k+1.
 4. The primary analysis for each survey separately.
 5. A pooled MaNGA + SAMI + CALIFA analysis. It is labelled as combining
@@ -404,6 +416,14 @@ outcome, but none of them decides the verdict:
 8. The MaNGA exploratory primary statistic (intercept a, BF, f), recomputed
    without the Galaxy Zoo merger cut. This shows the size of the effect of
    omitting the merger cut.
+9. Balance between CR and their matched controls. The table reports means and
+   standardised mean differences for:
+   - the matching covariates;
+   - the stellar circular speed V_c,*(1 R_e);
+   - the gas dispersion at 1.5 R_e.
+
+   This checks that the drift correction acts similarly in both groups. It is
+   reported, not used to modify the analysis.
 
 ## Transformations
 

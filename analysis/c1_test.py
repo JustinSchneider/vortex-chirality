@@ -159,6 +159,7 @@ def measure_one(args):
             for k in ("D_lo", "D_mid", "D_hi"):
                 out[f"{k}_{c}"] = r[c][k]
         out["Vs_1"], out["Vc_star"] = r[1.0]["Vs"], r[1.0]["Vc_star"]
+        out["sg_15"] = r[1.5]["sg"]
         out["gas_resid"] = np.nanmean([q["gas_resid"] for q in rows])
         return out
     except Exception as e:  # noqa: BLE001
@@ -199,10 +200,11 @@ def build(args):
         log[f"CR_{sv}"] = int(len(cr))
         if len(cr) == 0:
             continue
-        if len(pool) < 3 * len(cr):
-            log[f"insufficient_pool_{sv}"] = True
+        n_per = controls_per_cr(len(cr), len(pool))
+        log[f"controls_per_CR_{sv}"] = n_per
+        if n_per == 0:
             continue
-        pairs = match(cr, pool, COVS)
+        pairs = match(cr, pool, COVS, n_per=n_per)
         ctrl.update(pairs)
         cr_all.append(cr)
         co_ids += [p for v in pairs.values() for p in v]
@@ -220,6 +222,25 @@ def build(args):
     for sv in ("SAMI", "CALIFA"):
         log[f"CR_primary_{sv}"] = int((prim.survey == sv).sum())
     return t, cr, co, prim, log
+
+
+def controls_per_cr(n_cr, n_pool):
+    """3 controls per CR if the pool allows, else 2, else 1, else 0 (excluded)."""
+    for n in (3, 2, 1):
+        if n_pool >= n * n_cr:
+            return n
+    return 0
+
+
+def balance(cr, co):
+    """Standardised mean differences (CR - CO) / pooled SD; reported only."""
+    out = {}
+    for c in COVS + ["Vc_star", "sg_15"]:
+        a, b = cr[c].dropna(), co[c].dropna()
+        sd = np.sqrt((a.var(ddof=1) + b.var(ddof=1)) / 2)
+        out[c] = dict(mean_CR=float(a.mean()), mean_CO=float(b.mean()),
+                      smd=float((a.mean() - b.mean()) / sd) if sd > 0 else np.nan)
+    return out
 
 
 # ---------------------------------------------------------------- stage 3
@@ -302,6 +323,7 @@ def stage_run(args):
         m = np.isfinite(prim.rz_15)
         rho = stats.spearmanr(prim.rz_15[m], prim["s_D_mid_1.5"][m])
         sec["spearman_s_rz"] = dict(rho=float(rho.statistic), p=float(rho.pvalue), n=int(m.sum()))
+        sec["balance"] = balance(cr, co)  # 9: CR-control balance
         res["secondary"] = sec
         print(json.dumps(res, indent=1, default=float))
     print(f"\nREGISTERED VERDICT (C1): {res['verdict']}")

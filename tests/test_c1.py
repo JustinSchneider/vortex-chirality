@@ -89,3 +89,8 @@ def test_sami_overlap_galaxy_matches_manga():
     for pa in (ps, pg):
         d = abs(pa - 83) % 360
         assert min(d, 360 - d) < 20
+
+
+def test_controls_per_cr_fallback():
+    f = c1_test.controls_per_cr
+    assert f(10, 40) == 3 and f(10, 25) == 2 and f(10, 12) == 1 and f(10, 9) == 0
