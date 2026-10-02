@@ -116,8 +116,12 @@ from C1, have been accessed (see below).
 ## Explanation of existing data
 
 SAMI DR3 and CALIFA DR3 are public. As of registration, the author has not
-downloaded or viewed any SAMI or CALIFA stellar or gas velocity map, cube, or
-catalogue value of rotation velocity or dispersion.
+downloaded or viewed:
+- any stellar or gas velocity map or cube of a galaxy eligible for C1;
+- any catalogue value of rotation velocity or dispersion.
+
+The only maps inspected are those of two MaNGA-overlap galaxies, which are
+excluded from C1 (item 4 below).
 
 The author has read:
 - the SAMI DR3 and CALIFA DR3 release papers;
