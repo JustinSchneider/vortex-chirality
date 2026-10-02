@@ -30,7 +30,7 @@ a lower drift-corrected circular speed than the stars, relative to matched
 co-rotating controls.
 
 An exploratory analysis of MaNGA DR17 (90 counter-rotators, 270 matched
-controls; full log at [[GitHub/Zenodo URL]]) gave four findings:
+controls; full log at https://github.com/JustinSchneider/vortex-chirality) gave four findings:
 - The counter-rotators show a mean "slowdown" that is smaller than the full
   vortex prediction.
 - The slowdown is not robust to analysis choices.
@@ -399,7 +399,7 @@ in which a depends on stellar mass.
 ## Other
 
 **Code.**
-- Repository: [[GitHub URL]].
+- Repository: https://github.com/JustinSchneider/vortex-chirality.
 - Frozen commit: [[hash]], tagged `c1-prereg`.
 - Archive: [[Zenodo DOI]].
 - Any deviation from this plan will be listed, dated and justified in
