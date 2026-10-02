@@ -1,7 +1,7 @@
 # OSF Preregistration: confirmatory chirality test C1 (SAMI DR3 + CALIFA DR3)
 
-DRAFT, 2026-10-02. Sections follow the fields of the OSF "OSF Preregistration"
-template, in order. Items marked [[...]] must be filled in before submission.
+Final text for submission, 2026-10-02. Sections follow the fields of the OSF
+"OSF Preregistration" template, in order.
 
 ---
 
@@ -29,7 +29,8 @@ a lower drift-corrected circular speed than the stars, relative to matched
 co-rotating controls.
 
 An exploratory analysis of MaNGA DR17 (90 counter-rotators, 270 matched
-controls; full log at https://github.com/JustinSchneider/vortex-chirality) gave four findings:
+controls; full log at https://github.com/JustinSchneider/vortex-chirality;
+archived at https://doi.org/10.5281/zenodo.23112005) gave four findings:
 - The counter-rotators show a mean "slowdown" that is smaller than the full
   vortex prediction.
 - The slowdown is not robust to analysis choices.
@@ -481,8 +482,9 @@ in which a depends on stellar mass.
 
 **Code.**
 - Repository: https://github.com/JustinSchneider/vortex-chirality.
-- Frozen commit: [[hash]], tagged `c1-prereg`.
-- Archive: [[Zenodo DOI]].
+- Frozen commit: f3cc6de9aa2296abdc0736f07143acb9deaea0a9, tagged `c1-prereg`.
+- Archive: https://doi.org/10.5281/zenodo.23112005 (the GitHub release of
+  `c1-prereg`).
 - Entry points:
   - `analysis/c1_test.py select`: PAs only.
   - `analysis/c1_test.py dry`: counts only.
