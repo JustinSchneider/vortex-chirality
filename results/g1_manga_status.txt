@@ -1,0 +1,14 @@
+============================================================
+MaNGA G1 pipeline status   2026-10-02 15:40
+============================================================
+Stage 1 selection             : not running; log last written 0 min ago
+Stage 2 registered test       : not running; log last written 89 min ago
+Stage 3 inflow (exploratory)  : not running; log last written never
+
+[1] galaxies processed: 7582 / 7582 (100.0%)
+    good PAs: 4702; counter-rotator candidates: 113; co-rotator candidates: 4280
+    last progress line: 6882/6882
+
+[2 registered test] log on disk is from an EARLIER run (older than the selection); the new run has not written yet.
+
+No pipeline process is running. If the last stage's log ends with a verdict/result, the chain finished; otherwise it stopped early.

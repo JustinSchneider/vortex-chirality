@@ -1,0 +1,5 @@
+EXPLORATORY: gas radial flow vs counter-rotator slowdown (1 R_e)
+|V_R| median: CR 6.7, CO 5.8 km/s;  |V_R|/V_c median: CR 0.04, CO 0.03
+  D_lo  : rho(D,|VR|/Vc) CR -0.01 (p=0.941), CO +0.05 (p=0.407);  no-flow S0 =  +7.0 ± 12.5;  S(|VR| < 6) =  -0.2 ± 13.7 (N_CR=43)
+  D_mid : rho(D,|VR|/Vc) CR +0.06 (p=0.545), CO +0.08 (p=0.192);  no-flow S0 =  +9.5 ±  9.6;  S(|VR| < 6) =  +7.3 ±  9.7 (N_CR=43)
+  D_hi  : rho(D,|VR|/Vc) CR +0.18 (p=0.086), CO +0.08 (p=0.200);  no-flow S0 = +20.2 ±  7.5;  S(|VR| < 6) = +16.0 ±  8.3 (N_CR=43)

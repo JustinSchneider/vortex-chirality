@@ -1,0 +1,17 @@
+# Counter-rotating disk systems for Gate G1.
+# V1, V2: rotation speeds (km/s, both positive, line of sight unless noted) of the two components at R_kpc.
+# sig1, sig2: velocity dispersions (km/s). inc_deg: adopted inclination (both disks).
+# blind = False: values were seen before pre-registration (2026-10-02).
+# Johnston+2013 (MNRAS 428, 1296), D = 15.5 Mpc, outer-region values, measured out to ~2.25 kpc.
+# Coccato+2013 (A&A 549, A3), D = 16 Mpc, at R ~ 25" (~2 kpc); sigma1 < 30 beyond 1 kpc, sigma2 40-80; no errors quoted, +/-10 assumed.
+# Inclination: Coccato+2013 minimum allowed i = 67 deg; i = 90 is the edge-on limit. Both rows are run.
+# kind: same_radius (two components at R_kpc) or reversal (V1 = |V_out|, V2 = |V_in| of gas at R_rev).
+# cold1/cold2: component is cold gas (sigma <= 20 km/s) -> k = 0 for it (PREREG amendment b).
+# IC0719: Pizzella+2018 text: main disk 'reaches a rotation of +/-150 km/s at about 2 kpc', sigma ~50 outer; secondary '180 km/s reached at ~2 kpc', sigma ~30. No errors quoted -> +/-10 km/s, +/-25% (PREREG b, rule 5). i = 77, D = 28.6 Mpc.
+# NGC3593: Coccato+2013 'V1 ~ 80 at R ~ 20as (700 pc)', 'V2 ~ 100'; sigma 30-80 with both components mostly forced to the same sigma (55 used for both); errors 'do not exceed 40' -> 40 used. Not blind.
+system,source,blind,R_kpc,inc_deg,V1,e_V1,V2,e_V2,sig1,e_sig1,sig2,e_sig2,kind,cold1,cold2
+NGC4550,Johnston+2013 i=67,False,2.0,67,143,7,118,8,36,7,68,10,same_radius,False,False
+NGC4550,Johnston+2013 i=90,False,2.0,90,143,7,118,8,36,7,68,10,same_radius,False,False
+NGC4550,Coccato+2013 i=67,False,2.0,67,140,10,110,10,30,10,60,15,same_radius,False,False
+IC0719,Pizzella+2018 (arXiv:1804.03569) secondary-vs-main at ~2 kpc,True,2.0,77,180,10,150,10,30,7.5,50,12.5,same_radius,False,False
+NGC3593,Coccato+2013 at 20as (0.7 kpc); i=67 from Rubin+1985 (HyperLeda unreachable),False,0.7,67,100,40,80,40,55,13.75,55,13.75,same_radius,False,False

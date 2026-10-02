@@ -1,0 +1,78 @@
+{
+  "100": {
+    "N_CR": 20,
+    "f_dist": 1.1515295387207052,
+    "E_pred": 3847.054159049506,
+    "measured f": {
+      "supp_if_signal": 0.0033333333333333335,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.0033333333333333335,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    },
+    "f x 1.3": {
+      "supp_if_signal": 0.0033333333333333335,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.0,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    }
+  },
+  "80": {
+    "N_CR": 30,
+    "f_dist": 0.9122983822901993,
+    "E_pred": 3407.6939501194256,
+    "measured f": {
+      "supp_if_signal": 0.02,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.056666666666666664,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    },
+    "f x 1.3": {
+      "supp_if_signal": 0.006666666666666667,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.0033333333333333335,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    }
+  },
+  "60": {
+    "N_CR": 46,
+    "f_dist": 0.9772764352751232,
+    "E_pred": 3000.1963836018917,
+    "measured f": {
+      "supp_if_signal": 0.03666666666666667,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.04666666666666667,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    },
+    "f x 1.3": {
+      "supp_if_signal": 0.056666666666666664,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.013333333333333334,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    }
+  },
+  "40": {
+    "N_CR": 81,
+    "f_dist": 0.9543268579314292,
+    "E_pred": 2676.016015303705,
+    "measured f": {
+      "supp_if_signal": 0.0,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.0,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    },
+    "f x 1.3": {
+      "supp_if_signal": 0.006666666666666667,
+      "fals_if_signal": 0.0,
+      "fals_if_null": 0.0,
+      "supp_if_null": 0.0,
+      "sig_if_null": 0.0
+    }
+  }
+}

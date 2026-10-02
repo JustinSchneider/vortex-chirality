@@ -1,0 +1,17 @@
+after PA quality + merger cuts: CR 305, CO 3973
+measured 4278, failed 0
+after V_* > 40 cut: CR 81, CO pool 3035
+matched: CR 81, CO 243; low-disturbance half: CR 34, CO 123
+
+S_pred = 47.3 km/s;  E_pred = 2744 km^2/s^2 (from 79 CR)
+  R=1.0 Re D_lo  : S =  +13.9 ±  9.3 km/s (low-dist   +7.9 ± 12.1, N_CR=34);  med D_CR   -2.2, med D_CO  +11.7;  E =   24428 ± 26026
+  R=1.0 Re D_mid : S =  +26.0 ±  9.5 km/s (low-dist  +13.9 ± 12.6, N_CR=34);  med D_CR  -28.9, med D_CO   -2.9;  E =   29050 ± 27433
+  R=1.0 Re D_hi  : S =  +33.4 ± 10.3 km/s (low-dist  +23.0 ± 10.8, N_CR=34);  med D_CR  -52.9, med D_CO  -19.5;  E =   39244 ± 29309
+  R=0.5 Re D_lo  : S =   +0.3 ± 13.8 km/s (low-dist  -22.1 ± 19.0, N_CR=20);  med D_CR  +26.6, med D_CO  +27.0;  E = -165296 ± 175146
+  R=0.5 Re D_mid : S =   +2.0 ± 15.3 km/s (low-dist   -7.7 ± 23.4, N_CR=20);  med D_CR  +12.4, med D_CO  +14.3;  E = -376735 ± 425175
+  R=0.5 Re D_hi  : S =  +35.3 ± 15.6 km/s (low-dist  +18.1 ± 26.8, N_CR=20);  med D_CR  -45.4, med D_CO  -10.1;  E = -666799 ± 783012
+  R=1.5 Re D_lo  : S =  +29.6 ± 10.9 km/s (low-dist  +29.8 ± 17.0, N_CR=33);  med D_CR  -32.9, med D_CO   -3.4;  E =     323 ±  9558
+  R=1.5 Re D_mid : S =  +28.8 ± 11.4 km/s (low-dist  +31.7 ± 15.0, N_CR=33);  med D_CR  -45.7, med D_CO  -16.9;  E =    4759 ± 12010
+  R=1.5 Re D_hi  : S =  +31.3 ± 15.0 km/s (low-dist  +41.9 ± 16.4, N_CR=33);  med D_CR  -58.1, med D_CO  -26.8;  E =   16495 ± 17048
+
+REGISTERED VERDICT (PREREG g; R = 1 Re, all k): INCONCLUSIVE

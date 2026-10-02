@@ -1,0 +1,18 @@
+# Public MaNGA/SDSS products: large and re-downloadable by the analysis scripts
+data/manga/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# LaTeX build artifacts
+manuscript/*.aux
+manuscript/*.log
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.out
+manuscript/*.synctex.gz
+manuscript/*.fdb_latexmk
+manuscript/*.fls
+manuscript/main.pdf

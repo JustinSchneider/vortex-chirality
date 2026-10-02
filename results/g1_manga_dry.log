@@ -1,0 +1,5 @@
+after PA quality + merger cuts: CR 305, CO 3973
+measured 4278, failed 0
+after V_* > 100 cut: CR 20, CO pool 1484
+matched: CR 20, CO 60; low-disturbance half: CR 6, CO 33
+DRY RUN: mechanics OK; no D or E computed/printed.

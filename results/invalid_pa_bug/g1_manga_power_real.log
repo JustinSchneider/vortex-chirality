@@ -1,0 +1,27 @@
+==============================================================================
+Realistic power check (real nuisance properties; no gas speeds or D used)
+==============================================================================
+
+V_* > 100 km/s: N_CR = 20, N_CO = 60
+  CR median V_* 133, sigma_* 153 km/s; drift sensitivity |dD/dk| median 21 km/s per unit k
+  disturbance ratio CR/CO (gas residual) f = 1.15;  E_pred = 3847 (RMS R*zeta 62 km/s)
+  [measured f] signal present: SUPPORTED 0.00, falsified 0.00 | signal absent: FALSIFIED 0.00, false-support 0.00, E>3σ 0.00
+  [f x 1.3   ] signal present: SUPPORTED 0.00, falsified 0.00 | signal absent: FALSIFIED 0.00, false-support 0.00, E>3σ 0.00
+
+V_* > 80 km/s: N_CR = 30, N_CO = 90
+  CR median V_* 127, sigma_* 115 km/s; drift sensitivity |dD/dk| median 22 km/s per unit k
+  disturbance ratio CR/CO (gas residual) f = 0.91;  E_pred = 3408 (RMS R*zeta 58 km/s)
+  [measured f] signal present: SUPPORTED 0.02, falsified 0.00 | signal absent: FALSIFIED 0.06, false-support 0.00, E>3σ 0.00
+  [f x 1.3   ] signal present: SUPPORTED 0.01, falsified 0.00 | signal absent: FALSIFIED 0.00, false-support 0.00, E>3σ 0.00
+
+V_* > 60 km/s: N_CR = 46, N_CO = 138
+  CR median V_* 88, sigma_* 108 km/s; drift sensitivity |dD/dk| median 17 km/s per unit k
+  disturbance ratio CR/CO (gas residual) f = 0.98;  E_pred = 3000 (RMS R*zeta 55 km/s)
+  [measured f] signal present: SUPPORTED 0.04, falsified 0.00 | signal absent: FALSIFIED 0.05, false-support 0.00, E>3σ 0.00
+  [f x 1.3   ] signal present: SUPPORTED 0.06, falsified 0.00 | signal absent: FALSIFIED 0.01, false-support 0.00, E>3σ 0.00
+
+V_* > 40 km/s: N_CR = 81, N_CO = 243
+  CR median V_* 65, sigma_* 96 km/s; drift sensitivity |dD/dk| median 17 km/s per unit k
+  disturbance ratio CR/CO (gas residual) f = 0.95;  E_pred = 2676 (RMS R*zeta 52 km/s)
+  [measured f] signal present: SUPPORTED 0.00, falsified 0.00 | signal absent: FALSIFIED 0.00, false-support 0.00, E>3σ 0.00
+  [f x 1.3   ] signal present: SUPPORTED 0.01, falsified 0.00 | signal absent: FALSIFIED 0.00, false-support 0.00, E>3σ 0.00
