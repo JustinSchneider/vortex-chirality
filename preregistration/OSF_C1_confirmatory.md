@@ -109,7 +109,9 @@ permutation (seed 20261002).
 
 ## Existing data
 
-Registration prior to accessing the data.
+Registration prior to analysis of the data. The kinematic maps of the C1
+sample have not been accessed. Catalogues, and maps of two galaxies excluded
+from C1, have been accessed (see below).
 
 ## Explanation of existing data
 
