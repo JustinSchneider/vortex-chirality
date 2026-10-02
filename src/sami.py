@@ -16,6 +16,7 @@ galaxy; galaxies flagged WARNWCS are excluded). Nothing here prints or
 summarises rotation amplitudes.
 """
 
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -76,12 +77,35 @@ def catalogue() -> pd.DataFrame:
     return d.set_index("name")
 
 
-def find_file(catid, product, files=None):
-    """Unique file for (CATID, product) under data/sami/maps."""
+@lru_cache(maxsize=1)
+def _best_cube():
+    """CATID -> ISBEST cube letter (e.g. 'A'), from CubeObs."""
+    c = pd.read_csv(SAMI / "cubeobs.csv")
+    c = c[c["ISBEST"] == 1].drop_duplicates("CATID")
+    return {str(k): str(v).split("_")[-1] for k, v in zip(c.CATID, c.CUBEIDPUB)}
+
+
+@lru_cache(maxsize=1)
+def _index():
+    """'<CATID>_<cube>' -> list of map files, built once (one directory walk)."""
+    idx = {}
+    for f in MAPS.rglob("*.fits*"):
+        key = "_".join(f.name.split("_")[:2])
+        idx.setdefault(key, []).append(f)
+    return idx
+
+
+def find_file(catid, product, files=None, cube=None):
+    """Unique file for (CATID, product) under data/sami/maps.
+
+    Repeat observations come as cubes A, B, C...; only the ISBEST cube
+    (CubeObs) is used. `cube` overrides the lookup (tests).
+    """
     want, avoid = FILE_KEYS[product]
-    files = files if files is not None else list(MAPS.rglob(f"{catid}_*.fits*"))
+    cube = cube or _best_cube().get(str(catid), "A")
+    files = files if files is not None else _index().get(f"{catid}_{cube}", [])
     hits = [f for f in files
-            if f.name.split("_")[0] == str(catid)
+            if f.name.startswith(f"{catid}_{cube}_")
             and all(w in f.name.lower() for w in want)
             and not any(a in f.name.lower() for a in avoid)]
     if len(hits) != 1:

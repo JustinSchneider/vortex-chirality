@@ -506,3 +506,10 @@ The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and n
 
 - OSF registration https://osf.io/3dr29 was approved by the author.
 - Only after that were the C1 sample maps requested: the SAMI bulk download (Data Central) and the CALIFA download (`analysis/c1_fetch_califa.py`, which only downloads, with no measurement and no output beyond progress counts).
+
+### 2026-10-02: C1 loader fix (mechanical, before the select stage)
+
+- **Problem.** The SAMI bulk download contains repeat-observation cubes (B, C, D) for 180 galaxies. The frozen reader required a unique file match per product, so it would have treated those galaxies as missing.
+- **Fix.** `src/sami.py` now selects the ISBEST cube from CubeObs, as the registration already specifies ("ISBEST = 1 selects one cube per galaxy"), and indexes the map directory once. A unit test covers the change.
+- **Result.** All 2141 SAMI parent galaxies have complete map sets. 34 of them use a best cube other than A.
+- **What did not change:** cuts, statistics and decision rules. No measurement had been run.

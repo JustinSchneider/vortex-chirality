@@ -94,3 +94,11 @@ def test_sami_overlap_galaxy_matches_manga():
 def test_controls_per_cr_fallback():
     f = c1_test.controls_per_cr
     assert f(10, 40) == 3 and f(10, 25) == 2 and f(10, 12) == 1 and f(10, 9) == 0
+
+
+def test_sami_find_file_picks_requested_cube(tmp_path):
+    names = ["55_A_stellar-velocity_default_two-moment.fits",
+             "55_B_stellar-velocity_default_two-moment.fits"]
+    files = [tmp_path / n for n in names]
+    assert sami.find_file(55, "stellar_vel", files, cube="B").name == names[1]
+    assert sami.find_file(55, "stellar_vel", files, cube="A").name == names[0]
