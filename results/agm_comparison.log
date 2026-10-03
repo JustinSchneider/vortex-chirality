@@ -1,0 +1,14 @@
+POST HOC: counter-rotating gas vs the strong-gravitomagnetic GR model
+  MaNGA R = 1.0 R_e: model prediction (psi = C0 r) 32.0 km/s; zero-twist slowdown a = -6.9 +/- 8.8; f = -0.22 (95% upper 0.21); log10 LR = -4.13 -> strong evidence for H_C (N = 84)
+  MaNGA R = 1.5 R_e: model prediction (psi = C0 r) 40.5 km/s; zero-twist slowdown a = +11.6 +/- 10.6; f = 0.29 (95% upper 0.76); log10 LR = -1.35 -> strong evidence for H_C (N = 80)
+  SAMI (descriptive, N = 5): model prediction 44.8 km/s; s at 1.5 R_e = [3.3, 3.4, 6.6, 172.6, -5.4]
+  forecast for a typical counter-rotator (V_c = 172 km/s, R_e = 1.7 kpc):
+    1.0 R_e: predicted Delta V = 26 km/s (14 SPARC galaxies)
+    1.5 R_e: predicted Delta V = 36 km/s (20 SPARC galaxies)
+    2.0 R_e: predicted Delta V = 45 km/s (24 SPARC galaxies)
+    3.0 R_e: predicted Delta V = 60 km/s (25 SPARC galaxies)
+    4.0 R_e: predicted Delta V = 73 km/s (26 SPARC galaxies)
+    test at 2 R_e (P = 45, scatter 62 km/s): N for 80% decisive power = 60
+    test at 2 R_e (P = 45, scatter 93 km/s): N for 80% decisive power = 120
+    test at 3 R_e (P = 60, scatter 62 km/s): N for 80% decisive power = 40
+    test at 3 R_e (P = 60, scatter 93 km/s): N for 80% decisive power = 80

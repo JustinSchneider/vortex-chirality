@@ -569,3 +569,28 @@ The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and n
 **Correction (found while reading secondary 8).** The exploratory MaNGA file `g1_manga_discriminant_cr.csv` defines s_i = median(D over *all* matched controls) − D_i. The C1 registration defines s_i using *each CR's own* 3 controls. The frozen secondary 5 pools MaNGA s values of the first kind with C1 values of the second, so its result (f upper bound 0.55) mixes definitions. It should not be quoted as a constraint.
 
 The consistent MaNGA figure is secondary 8 with the merger cut: f upper bound 0.90. The C1 power analysis (`c1_power.py`) was calibrated on the global-median definition, so its residual scatter, and hence its power, were probably optimistic.
+
+### 2026-10-03: POST HOC comparison with the strong-gravitomagnetic GR model (not registered)
+
+**Model.** Astesiano, Ruggiero & Re (2026, arXiv:2606.18868), Eq. 17. Their Eq. 4 is a geodesic equation, so counter-rotating gas follows the counter-rotating branch. The derivation is `derivations/04_strong_gravitomagnetic_branches.py`. The predicted asymmetry is ΔV = (V_obs² − V_bar²)/V_obs for their solution ψ = C0 r, and ΔV = 2(V_obs − V_bar) for rigid dragging. It is evaluated with the RAR on matched SPARC galaxies, at each counter-rotator's own radius.
+
+**Statistic.** The C1 primary statistic (zero-twist intercept, with per-CR controls), applied to MaNGA with P replaced by the model prediction. Code: `analysis/agm_comparison.py`; output in `results/agm_comparison.*`.
+
+| Radius | Model ΔV | a (central k) | f, 95% upper | log10 LR (k−1 / k / k+1) |
+|---|---|---|---|---|
+| 1.0 R_e | 32 | −6.9 ± 8.8 | 0.21 | −4.1 / −4.1 / −1.6 |
+| 1.5 R_e | 40.5 | +11.6 ± 10.6 | 0.76 | −1.4 / −1.4 / +0.8 |
+
+- At 1.0 R_e the model's counter-rotating branch is strongly disfavoured at all three drift factors.
+- At 1.5 R_e it is disfavoured at k−1 and k, but moderately favoured at k+1. The drift correction is the controlling systematic there.
+- The rigid-dragging variant gives similar or stronger results.
+- SAMI (descriptive, N = 5): model 45 km/s; observed s = +3.3, +3.4, +6.6, +172.6, −5.4.
+
+**Caveats.**
+- The authors apply ψ = C0 r beyond the luminous disc. These radii are inside it, so this tests an extension of the model.
+- The MaNGA data are exploratory (already seen).
+- This rebuild of the MaNGA sample gives a slightly different 1.5 R_e intercept (11.6 against 15.6 in secondary 8, with N = 80 against 83) because the measurement cache and inclusion rules differ.
+
+**Outer-disc forecast** for a typical counter-rotator (V_c ≈ 172 km/s, R_e ≈ 1.7 kpc):
+- Predicted ΔV: 45, 60 and 73 km/s at 2, 3 and 4 R_e.
+- A decisive (likelihood ratio > 10, 80% power) zero-twist test needs about 40–80 counter-rotators at 3 R_e, or 60–120 at 2 R_e, depending on the measurement scatter.
