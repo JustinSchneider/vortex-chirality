@@ -558,3 +558,14 @@ The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and n
 - This is dominated by the MaNGA data, which generated the hypothesis, so it is reported as exploratory.
 
 **Secondary 8:** running.
+
+### 2026-10-02: C1 secondary 8, and a correction to how secondary 5 is read
+
+**Secondary 8 (MaNGA, with the registered per-CR control definition of s).**
+- With the merger cut: a = +15.6 ± 10.8 km/s, P = 40.3, f = 0.39 (95% CI −0.02 to 0.96; one-sided upper bound 0.90). The likelihood ratio is 0.21, labelled "moderate evidence for H_C". N = 83.
+- Without the merger cut: a = +18.6 ± 9.7, f = 0.46 (upper bound 0.83). The likelihood ratio is 0.51, labelled "inconclusive". N = 83.
+- So the merger cut has a small effect.
+
+**Correction (found while reading secondary 8).** The exploratory MaNGA file `g1_manga_discriminant_cr.csv` defines s_i = median(D over *all* matched controls) − D_i. The C1 registration defines s_i using *each CR's own* 3 controls. The frozen secondary 5 pools MaNGA s values of the first kind with C1 values of the second, so its result (f upper bound 0.55) mixes definitions. It should not be quoted as a constraint.
+
+The consistent MaNGA figure is secondary 8 with the merger cut: f upper bound 0.90. The C1 power analysis (`c1_power.py`) was calibrated on the global-median definition, so its residual scatter, and hence its power, were probably optimistic.
