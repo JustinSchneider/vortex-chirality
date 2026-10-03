@@ -1,0 +1,27 @@
+{
+  "log": {
+    "parent_CALIFA": 280,
+    "parent_SAMI": 2996,
+    "dropped_in_MaNGA": 101,
+    "dropped_SAMI_in_CALIFA": 0,
+    "parent_after_cuts": 2391,
+    "CR_candidates": 8,
+    "CO_candidates": 678,
+    "CR_after_cuts": 8,
+    "CO_pool_after_cuts": 634,
+    "CR_SAMI": 7,
+    "controls_per_CR_SAMI": 3,
+    "CR_CALIFA": 1,
+    "controls_per_CR_CALIFA": 3,
+    "CR_matched": 8,
+    "CO_matched": 24,
+    "CR_primary_1.5Re": 5,
+    "CR_primary_SAMI": 5,
+    "CR_primary_CALIFA": 0
+  },
+  "verdict": "UNDERPOWERED (N = 5 < 10): descriptive only",
+  "descriptive": {
+    "P": 44.85943753640457,
+    "s_median": 3.377795249791153
+  }
+}

@@ -531,3 +531,30 @@ The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and n
 - The dry run required no loader fixes.
 
 **Noted before the full run.** The registration lists the secondary analyses as reported "regardless of outcome", but the frozen `c1_test.py run` computes them only when N ≥ 10. After the registered run, the secondary quantities will be computed with the same frozen functions and reported as descriptive. No inference will be drawn from them, since N < 10.
+
+### 2026-10-02: C1 registered run (executed once). RESULT OF RECORD
+
+**Registered verdict: UNDERPOWERED (N = 5 < 10), descriptive only.** All 5 primary counter-rotators are in SAMI. The single CALIFA counter-rotator, NGC 1167, has no valid 1.5 R_e ring.
+
+**Descriptive quantities** (`results/c1.json`, `results/c1_descriptive.json`):
+- Prediction: P = 44.9 km/s.
+- Per-CR slowdown s at 1.5 R_e, central k, with the twist in brackets:
+  - 230421: +3.3 (2°)
+  - 300787: +3.4 (1°)
+  - 278840: +6.6 (0°)
+  - 321059: −5.4 (47°)
+  - 184648: +172.6 (6°)
+- Theil-Sen intercept: a = +3.7 ± 38.1 km/s, so f = 0.08. The likelihood ratio is 0.56 (it would read "inconclusive" even if N were larger). The same holds at k ± 1.
+- Four of the five sit within 7 km/s of zero. One outlier (184648) inflates σ_a.
+- Secondary 1: S at 1.5 R_e = +27.8 ± 13.7 km/s (central k; 6 CR, 17 controls). This is close to the MaNGA value. The statistic mixes settled and unsettled gas.
+- Secondary 9 (balance): the matching covariates have standardised mean differences below 0.25. The CR gas is hotter at 1.5 R_e (σ_g 57 against 43 km/s, SMD 0.64). V_c,* is somewhat lower in the CR (SMD −0.33).
+
+**Secondary 7.** All 5 SAMI primary CR are also counter-rotators (ΔPA > 150°) in the SAMI DR3 catalogue PAs. The pipeline's classification is confirmed. N < 10, so the primary statistic was not computed.
+
+**Secondary 5 (pooled MaNGA exploratory + C1; NOT confirmatory).**
+- N = 85.
+- a = +7.6 ± 6.3 km/s against P = 40.6, so f = 0.19 with a 95% upper bound of 0.55.
+- log10 likelihood ratio = −5.6, favouring H_C.
+- This is dominated by the MaNGA data, which generated the hypothesis, so it is reported as exploratory.
+
+**Secondary 8:** running.
