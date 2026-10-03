@@ -117,42 +117,67 @@ def figures(t, out, c1):
     fig, ax = plt.subplots(figsize=(3.4, 2.5))
     p = out["profile"]
     for k, lab in MODELS.items():
-        ax.plot(p["radii"], p[k], color=col[k], lw=1.4, label=lab)
-    for tag, x in (("1.0", 1.0), ("1.5", 1.5)):
-        a = out[f"R{tag}"]["intercepts"]["GM1_D_mid"]
-        ax.errorbar(x, a["a"], yerr=a["sd_a"], fmt="o", color="k", ms=4, capsize=2,
-                    label="MaNGA zero-twist intercept" if tag == "1.0" else None)
+        ax.plot(p["radii"], p[k], color=col[k], lw=1.4, label=lab + " (prediction)")
+    for n, (tag, x) in enumerate((("1.0", 1.0), ("1.5", 1.5))):
+        ic = out[f"R{tag}"]["intercepts"]
+        a = ic["GM1_D_mid"]
+        # drift-factor systematic: range of the intercept over k-1, k, k+1
+        lo = min(ic[f"GM1_{k}"]["a"] for k in ("D_lo", "D_mid", "D_hi"))
+        hi = max(ic[f"GM1_{k}"]["a"] for k in ("D_lo", "D_mid", "D_hi"))
+        ax.fill_between([x - 0.09, x + 0.09], lo, hi, color="0.85", lw=0,
+                        label=r"range over drift factor $k\pm1$" if n == 0 else None)
+        ax.errorbar(x, a["a"], yerr=1.96 * a["sd_a"], fmt="none", ecolor="k", lw=0.7, capsize=2,
+                    label="95% interval" if n == 0 else None)
+        ax.errorbar(x, a["a"], yerr=a["sd_a"], fmt="o", color="k", ms=4, lw=1.8, capsize=0,
+                    label=r"MaNGA zero-twist slowdown ($\pm1\sigma$)" if n == 0 else None)
     ax.axhline(0, color="0.5", lw=0.6, ls=":")
+    ax.text(3.95, 2, "no velocity-dependent force", ha="right", va="bottom", fontsize=6, color="0.4")
     ax.set_xlabel(r"$R/R_{\rm e}$")
     ax.set_ylabel(r"$\Delta V = v_{\rm pro}-|v_{\rm retro}|$ (km s$^{-1}$)")
-    ax.legend(frameon=False, fontsize=6.5, loc="upper left")
+    ax.legend(frameon=False, fontsize=5.6, loc="upper left")
     ax.set_xlim(0.4, 4.1)
+    ax.set_ylim(-45, 100)
     fig.tight_layout()
     fig.savefig(FIG / "fig_predictions.pdf")
     plt.close(fig)
-    # Fig. 2: slowdown against twist
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.7), sharey=True)
+    # Fig. 2: slowdown against twist, with binned medians; sqrt twist axis
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.3), sharey=True)
     for ax, tag in zip(axes, ("1.0", "1.5")):
         m = np.isfinite(t[f"s_D_mid_{tag}"]) & np.isfinite(t.twist)
         x, y = t.twist[m].values.astype(float), t[f"s_D_mid_{tag}"][m].values
-        ax.scatter(x, y, s=9, c="0.35", lw=0, label="MaNGA (exploratory)")
+        ax.set_xscale("function", functions=(np.sqrt, np.square))
+        ax.scatter(x, y, s=8, c="0.65", lw=0, label="individual MaNGA galaxies")
+        edges = np.quantile(x, [0, 0.25, 0.5, 0.75, 1.0])
+        bx, by, be = [], [], []
+        for q in range(4):
+            sel = (x >= edges[q]) & ((x < edges[q + 1]) if q < 3 else (x <= edges[q + 1]))
+            if sel.sum() >= 5:
+                med, err = boot_median(y[sel])
+                bx.append(float(np.median(x[sel])))
+                by.append(med)
+                be.append(err)
+        ax.errorbar(bx, by, yerr=be, fmt="s", color="k", ms=4.5, capsize=2, lw=1,
+                    label="median of each quarter of the sample")
         a, b = theil_sen(x, y)
-        xx = np.linspace(0, 180, 50)
-        ax.plot(xx, a[0] + b[0] * xx, color="k", lw=1)
-        for k in MODELS:
+        xx = np.linspace(0, 180, 200)
+        ax.plot(xx, a[0] + b[0] * xx, color="k", lw=0.6, ls="-", alpha=0.6, label="Theil-Sen fit")
+        for k in ("FS", "GM2"):
             ax.axhline(out[f"R{tag}"]["pred"][k], color=col[k], lw=1.1, ls="--",
-                       label=MODELS[k] + " (prediction)")
+                       label=("flowing space / " + MODELS["GM1"] if k == "FS" else MODELS[k]) + " (prediction)")
         if tag == "1.5":
-            ax.scatter(out["SAMI"]["twist"], out["SAMI"]["s"], s=22, marker="D",
+            ax.scatter(out["SAMI"]["twist"], out["SAMI"]["s"], s=24, marker="D",
                        facecolor="none", edgecolor="#e7298a", lw=0.9, label="SAMI (registered, N=5)")
-        ax.axhline(0, color="0.5", lw=0.6, ls=":")
-        ax.set_xlabel("gas kinematic twist (deg)")
+        ax.axhline(0, color="0.4", lw=0.7, ls=":")
+        ax.set_xticks([0, 5, 10, 25, 50, 100, 180])
+        ax.set_xticklabels(["0", "5", "10", "25", "50", "100", "180"])
+        ax.set_xlim(0, 185)
+        ax.set_xlabel("gas kinematic twist (deg; square-root scale)")
         ax.set_title(rf"$R = {tag}\,R_{{\rm e}}$", fontsize=8)
-        ax.set_xlim(-5, 185)
         ax.set_ylim(-230, 270)
     axes[0].set_ylabel(r"slowdown $s$ (km s$^{-1}$)")
-    axes[1].legend(frameon=False, fontsize=6, loc="upper right")
-    fig.tight_layout()
+    h, lab = axes[1].get_legend_handles_labels()
+    fig.legend(h, lab, frameon=False, fontsize=6.5, loc="lower center", ncol=3)
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
     fig.savefig(FIG / "fig_twist.pdf")
     plt.close(fig)
 
