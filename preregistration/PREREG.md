@@ -513,3 +513,21 @@ The pre-specified verdict (INCONCLUSIVE) stands. The subsamples are nested and n
 - **Fix.** `src/sami.py` now selects the ISBEST cube from CubeObs, as the registration already specifies ("ISBEST = 1 selects one cube per galaxy"), and indexes the map directory once. A unit test covers the change.
 - **Result.** All 2141 SAMI parent galaxies have complete map sets. 34 of them use a best cube other than A.
 - **What did not change:** cuts, statistics and decision rules. No measurement had been run.
+
+### 2026-10-02: C1 select and dry run (counts only)
+
+**Position-angle stage.**
+- 2391 parent galaxies, with no failures. SAMI is 2141 of these and CALIFA 250.
+- 728 galaxies pass the PA-quality cuts.
+- Counter-rotator candidates: 8 (SAMI 7, CALIFA 1).
+- Co-rotating candidates: 678.
+
+**Why the yield is low.** The MaNGA-derived rule of at least 50 valid spaxels after 2× decimation fails for gas in 994 of 2141 SAMI galaxies (SAMI's field of view is 15″) and for stars in 843. Among the 15 raw ΔPA > 150° candidates, PA errors above 20° remove about half. The registered yield estimate of 15–20 was based on published counter-rotator counts and did not apply these rules to SAMI's field of view. That was an error in the sample-size forecast, not a change of plan.
+
+**Dry run.**
+- All 8 CR pass V_* > 40 and are matched 3:1, giving 24 controls.
+- Only 5 CR (all SAMI) have valid 1.5 R_e measurements and a twist.
+- Under the registered stopping rule (fewer than 10), inference is not carried out, and the run reports descriptively.
+- The dry run required no loader fixes.
+
+**Noted before the full run.** The registration lists the secondary analyses as reported "regardless of outcome", but the frozen `c1_test.py run` computes them only when N ≥ 10. After the registered run, the secondary quantities will be computed with the same frozen functions and reported as descriptive. No inference will be drawn from them, since N < 10.
