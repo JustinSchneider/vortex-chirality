@@ -17,6 +17,9 @@
                 definition of the slowdown, for comparison with Table 1
   fs_shear    : exact flowing-space prediction (ODE) against 2 (V_obs - V_bar)
                 and against the superseded first-draft formula
+  drift_decomposition : medians of the pieces of (sigma_g^2 - sigma_*^2)/(V_g + V_*)
+                for counter-rotators and controls ("python paper_checks.py drift"
+                recomputes only this block)
 
 The merger check measures the merger-flagged galaxies that the main cache
 excludes and stores them in data/processed/manga_meas_mergers.csv.
@@ -291,6 +294,48 @@ def fs_shear(paper):
     return out
 
 
+# ---------------------------------------------------------------- drift-term decomposition
+def drift_decomposition():
+    """Why the shift of D per unit k is more negative in counter-rotators.
+
+    Re-measures the 90 counter-rotators and their 270 matched controls from
+    the cached maps and reports group medians at 1.0 and 1.5 R_e of the pieces
+    of (sigma_g^2 - sigma_*^2)/(V_g + V_*): the two dispersions, the two
+    rotation speeds, the numerator, the denominator and the term itself, plus
+    the fitted drift factors. Plain group medians (the paper's -18.5 / -13.8
+    km/s are the median over counter-rotators and the median of per-CR control
+    medians of (D_hi - D_lo)/2, which include the clipping of k at zero)."""
+    t = build()
+    s = t[t.Vs_1 > 40]
+    cr, pool = s[s.group == "CR"], s[s.group == "CO"]
+    pairs = match(cr, pool, COLS)
+    co_ids = sorted({p for v in pairs.values() for p in v})
+    d = load_catalogues()
+    ids = list(cr.index) + co_ids
+    jobs = [(p, d.loc[p, "pa_star"], d.loc[p, "pa_gas"], d.loc[p, "inc"], d.loc[p, "Re_arcsec"]) for p in ids]
+    rec = {}
+    with ProcessPoolExecutor(8) as ex:
+        for pifu, rows, _ in ex.map(measure_one, jobs, chunksize=2):
+            if rows is not None:
+                rec[pifu] = {q["r_re"]: q for q in rows}
+    pieces = {
+        "sigma_gas": lambda q: q["sg"], "sigma_star": lambda q: q["ss"],
+        "V_gas": lambda q: q["Vg"], "V_star": lambda q: q["Vs"],
+        "k_gas": lambda q: q["kg"], "k_star": lambda q: q["ks"],
+        "numerator_sg2_minus_ss2": lambda q: q["sg"] ** 2 - q["ss"] ** 2,
+        "denominator_Vg_plus_Vs": lambda q: q["Vg"] + q["Vs"],
+        "term": lambda q: (q["sg"] ** 2 - q["ss"] ** 2) / (q["Vg"] + q["Vs"]),
+    }
+    out = {"N_CR_measured": int(sum(p in rec for p in cr.index)),
+           "N_controls_measured": int(sum(p in rec for p in co_ids))}
+    for c in (1.0, 1.5):
+        out[str(c)] = {}
+        for grp, ids_ in (("CR", list(cr.index)), ("controls", co_ids)):
+            vals = {k: [f(rec[p][c]) for p in ids_ if p in rec] for k, f in pieces.items()}
+            out[str(c)][grp] = {k: float(np.nanmedian(v)) for k, v in vals.items()}
+    return out
+
+
 # ---------------------------------------------------------------- validation
 def validation():
     spec = importlib.util.spec_from_file_location("tmm", ROOT / "tests" / "test_manga_measure.py")
@@ -325,11 +370,19 @@ def validation():
 
 def main():
     paper = pd.read_csv(PAPER, index_col=0)
+    out_path = ROOT / "results" / "paper_checks.json"
+    if sys.argv[1:] == ["drift"]:        # recompute only the drift decomposition
+        res = json.loads(out_path.read_text())
+        res["drift_decomposition"] = drift_decomposition()
+        out_path.write_text(json.dumps(res, indent=2, default=float))
+        print_drift(res["drift_decomposition"])
+        return
     gm = model_profiles()
     res = {"manga_counts": manga_counts(), "c1_counts": c1_counts(), "manga": manga(paper), "sami_sigma": sami_sigma(),
            "validation": validation(), "seeds": seeds(paper), "merger": merger(gm),
-           "pooled": pooled(paper), "fs_shear": fs_shear(paper)}
-    (ROOT / "results" / "paper_checks.json").write_text(json.dumps(res, indent=2, default=float))
+           "pooled": pooled(paper), "fs_shear": fs_shear(paper),
+           "drift_decomposition": drift_decomposition()}
+    out_path.write_text(json.dumps(res, indent=2, default=float))
     print(f"MaNGA: {res['manga_counts']}")
     c, mg, v, sd, me = res["c1_counts"], res["manga"], res["validation"], res["seeds"], res["merger"]
     print(f"C1: parent {c['parent']} {c['parent_by_survey']}; PA quality {c['pa_quality']}"
@@ -365,6 +418,17 @@ def main():
               f" superseded d(Ru)/dR {x['mean_superseded_dRu_dR']:.2f}"
               f" (max |diff| {x['max_abs_exact_minus_superseded_kms']:.2f} km/s); N {x['N']};"
               f" root residual {fsh['max_abs_root_residual_kms']:.1e}")
+    print_drift(res["drift_decomposition"])
+
+def print_drift(dd):
+    for c in ("1.0", "1.5"):
+        for grp in ("CR", "controls"):
+            x = dd[c][grp]
+            print(f"drift pieces {c} R_e {grp:8s}: sigma_g {x['sigma_gas']:.1f}, sigma_* {x['sigma_star']:.1f},"
+                  f" V_g {x['V_gas']:.1f}, V_* {x['V_star']:.1f}, k_g {x['k_gas']:.2f}, k_* {x['k_star']:.2f};"
+                  f" numerator {x['numerator_sg2_minus_ss2']:+.0f}, denominator {x['denominator_Vg_plus_Vs']:.0f},"
+                  f" term {x['term']:+.1f}")
+
 
 if __name__ == "__main__":
     main()
