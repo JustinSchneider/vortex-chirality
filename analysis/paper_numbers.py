@@ -124,10 +124,10 @@ def figures(t, out, c1):
     plt.rcParams.update({"font.size": 8, "axes.linewidth": 0.6})
     col = {"GM1": "#d95f02", "GM2": "#7570b3"}
     # Fig. 1: predicted asymmetry against radius
-    fig, ax = plt.subplots(figsize=(3.4, 2.5))
+    fig, ax = plt.subplots(figsize=(3.4, 3.2))
     p = out["profile"]
     for k, lab in MODELS.items():
-        ax.plot(p["radii"], p[k], color=col[k], lw=1.4, label=lab + " (prediction)")
+        ax.plot(p["radii"], p[k], color=col[k], lw=1.4, label=lab)
     for n, (tag, x) in enumerate((("1.0", 1.0), ("1.5", 1.5))):
         ic = out[f"R{tag}"]["intercepts"]
         a = ic["GM1_D_mid"]
@@ -135,7 +135,7 @@ def figures(t, out, c1):
         lo = min(ic[f"GM1_{k}"]["a"] for k in ("D_lo", "D_mid", "D_hi"))
         hi = max(ic[f"GM1_{k}"]["a"] for k in ("D_lo", "D_mid", "D_hi"))
         ax.fill_between([x - 0.09, x + 0.09], lo, hi, color="0.85", lw=0,
-                        label=r"range over drift factor $k\pm1$" if n == 0 else None)
+                        label=r"drift-factor range ($k\pm1$)" if n == 0 else None)
         ax.errorbar(x, a["a"], yerr=1.96 * a["sd_a"], fmt="none", ecolor="k", lw=0.7, capsize=2,
                     label="95% interval" if n == 0 else None)
         ax.errorbar(x, a["a"], yerr=a["sd_a"], fmt="o", color="k", ms=4, lw=1.8, capsize=0,
@@ -144,10 +144,12 @@ def figures(t, out, c1):
     ax.text(3.95, 2, "no velocity-dependent force", ha="right", va="bottom", fontsize=6, color="0.4")
     ax.set_xlabel(r"$R/R_{\rm e}$")
     ax.set_ylabel(r"$\Delta V = v_{\rm pro}-|v_{\rm retro}|$ (km s$^{-1}$)")
-    ax.legend(frameon=False, fontsize=5.6, loc="upper left")
     ax.set_xlim(0.4, 4.1)
     ax.set_ylim(-45, 100)
-    fig.tight_layout()
+    h, lab = ax.get_legend_handles_labels()
+    fig.legend(h, lab, frameon=False, fontsize=6, loc="lower center", ncol=2,
+               columnspacing=1.0, handlelength=1.6, handletextpad=0.5)
+    fig.tight_layout(rect=(0, 0.17, 1, 1))
     fig.savefig(FIG / "fig_predictions.pdf")
     plt.close(fig)
     # Fig. 2: slowdown against twist, with binned medians; sqrt twist axis
