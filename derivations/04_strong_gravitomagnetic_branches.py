@@ -23,7 +23,8 @@ stars. The script:
      occupy);
   4. checks the limits C0 -> 0 (Newton) and V0 -> 0 (V+ -> C0, their Eq. 18);
   5. generalises to psi = K r^n: the asymmetry is n K r^(n-1), and for
-     1 <= n <= 2 it is at least the velocity discrepancy V_obs - V0, so
+     every n >= 1 (in particular 1 <= n <= 2) it is at least the velocity
+     discrepancy V_obs - V0 (proved symbolically, checked on a grid), so
      the prediction does not hinge on the specific choice psi = C0 r.
 
 Exit code 0 = all assertions passed.
@@ -89,9 +90,21 @@ b2, b1 = sp.Poly(qn, V).all_coeffs()[0], sp.Poly(qn, V).all_coeffs()[1]
 check("psi = K r^n: V+ - |V-| = n K r^(n-1)", sp.simplify(-b1 / b2 - n * x) == 0)
 vpn = sp.solve(qn, V)
 vpn = [v for v in vpn if sp.simplify(v.subs({n: 1.5, x: 1, V0: 1})) > 0][0]
+# Analytic proof. The co-rotating root is V+ = [n x + sqrt((n-2)^2 x^2 + 4 V0^2)]/2,
+# so  n x >= V+ - V0  <=>  n x + 2 V0 >= sqrt((n-2)^2 x^2 + 4 V0^2).
+# Both sides are positive; squaring gives  4 n x V0 >= (4 - 4 n) x^2, i.e.
+# n V0 >= (1 - n) x, which holds for every n >= 1 (the right-hand side is <= 0).
+check("V+ = [n x + sqrt((n-2)^2 x^2 + 4 V0^2)]/2",
+      sp.simplify(vpn - (n * x + sp.sqrt((n - 2) ** 2 * x ** 2 + 4 * V0 ** 2)) / 2) == 0)
+lhs_sq_minus_rhs_sq = sp.expand((n * x + 2 * V0) ** 2 - ((n - 2) ** 2 * x ** 2 + 4 * V0 ** 2))
+check("(n x + 2 V0)^2 - [(n-2)^2 x^2 + 4 V0^2] = 4 x [n V0 - (1 - n) x]",
+      sp.simplify(lhs_sq_minus_rhs_sq - 4 * x * (n * V0 - (1 - n) * x)) == 0)
+m = sp.Symbol("m", nonnegative=True)   # n = 1 + m
+check("n >= 1: n V0 - (1 - n) x = (1 + m) V0 + m x >= 0, so V+ - |V-| >= V_obs - V0",
+      sp.simplify((n * V0 - (1 - n) * x).subs(n, 1 + m) - ((1 + m) * V0 + m * x)) == 0)
 worst = min(float((n * x - (vpn - V0)).subs({n: nn, x: xx, V0: 1}))
             for nn in (1, 1.25, 1.5, 1.75, 2) for xx in (0.05, 0.2, 0.5, 1, 2, 5))
-check("1 <= n <= 2: V+ - |V-| >= V_obs - V0 (grid check)", worst >= -1e-12)
+check("1 <= n <= 2: V+ - |V-| >= V_obs - V0 (numerical grid, sanity)", worst >= -1e-12)
 check("n = 2: V+ = V0 + K r (flowing-space Formulation A)",
       sp.simplify(vpn.subs(n, 2) - (V0 + x)) == 0)
 

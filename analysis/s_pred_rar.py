@@ -12,6 +12,13 @@ u(R) = V_RAR(R) - V_bar(R), where V_RAR follows from the RAR
 The asymmetry is R*zeta = d(R u)/dR. It is evaluated for every SPARC galaxy
 (Q < 3, i >= 30) at the MaNGA counter-rotator's R_e, using SPARC galaxies with
 |V_flat - V_c,*| < 30 km/s, exactly as in the registered S_pred.
+
+SUPERSEDED (PREREG.md, 2026-10-04): the additive relation V_obs = V_bar + u
+holds only for solid-body flow. For a general flow v_pro = V_bar + u - S R/2
++ O(S^2), so the first-order-consistent prediction is Delta V = 2 (V_RAR -
+V_bar) (derivations/01_force_laws.py [A6]; analysis/agm_comparison.py "n2").
+This script and pred_rz are kept unchanged so that the registered C1 numbers
+(P = 44.9 km/s) remain reproducible; the paper no longer uses this formula.
 """
 import json
 import sys

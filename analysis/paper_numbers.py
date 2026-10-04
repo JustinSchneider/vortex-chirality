@@ -7,9 +7,15 @@ it restates registered results.
 
 Models (all normalised to the RAR on matched SPARC galaxies, at each
 counter-rotator's own radius):
-  FS : flowing space / vector potential, Delta V = R zeta = d(R u)/dR, u = V_RAR - V_bar
   GM1: strong-gravitomagnetic GR, psi = C0 r:  Delta V = (V^2 - V_bar^2)/V
-  GM2: strong-gravitomagnetic GR, psi = K r^2: Delta V = 2 (V - V_bar)
+  GM2: flowing space (any flow profile, to first order in the shear), the
+       vector-potential form, and rigid dragging psi = K r^2:
+       Delta V = 2 (V - V_bar)                    (derivations/01 [A6], 04)
+  FS_superseded: the first draft's flowing-space formula, Delta V = d(R u)/dR
+       with u = V_RAR - V_bar. It assumed V_obs = V_bar + u, which holds only
+       for solid-body flow (wrong at first order in the shear). Kept in the
+       JSON and the CSV for the record; not used in the paper. The C1
+       registration's P was computed with it (analysis/c1_test.py, rz_15).
 """
 import json
 import sys
@@ -35,8 +41,9 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 FIG = ROOT / "manuscript" / "figures"
 RNG = np.random.default_rng(20261003)
-MODELS = {"FS": "flowing space", "GM1": r"GR dragging, $\psi\propto r$",
-          "GM2": r"GR dragging, $\psi\propto r^2$"}
+MODELS = {"GM1": r"GR dragging, $\psi\propto r$",
+          "GM2": r"flowing space / rigid dragging, $\psi\propto r^2$"}
+SUPERSEDED = "FS"      # columns FS_1.0 / FS_1.5 are kept for the record only
 
 
 def add_predictions(t, gm, fs):
@@ -72,7 +79,8 @@ def main():
             rho_pred=float(rp.statistic), p_pred=float(rp.pvalue),
             twist_median=float(med), low_twist=boot_median(lo), high_twist=boot_median(hi),
             n_low=int(len(lo)), n_high=int(len(hi)),
-            pred={k: float(t[f"{k}_{tag}"][m].mean()) for k in MODELS})
+            pred={k: float(t[f"{k}_{tag}"][m].mean()) for k in MODELS},
+            pred_FS_superseded=float(t[f"{SUPERSEDED}_{tag}"][m].mean()))
         out[f"R{tag}"]["intercepts"] = {}
         for key in MODELS:
             for k in ("D_lo", "D_mid", "D_hi"):
@@ -84,6 +92,7 @@ def main():
               f" rho(s, GM1 pred) = {rp.statistic:+.2f} (p = {rp.pvalue:.2f});"
               f" low-twist median s = {out[f'R{tag}']['low_twist'][0]:+.1f} +/- {out[f'R{tag}']['low_twist'][1]:.1f},"
               f" high-twist {out[f'R{tag}']['high_twist'][0]:+.1f} +/- {out[f'R{tag}']['high_twist'][1]:.1f}")
+        print(f"   (superseded first-draft FS formula would give P = {out[f'R{tag}']['pred_FS_superseded']:.1f})")
         for key in MODELS:
             row = [out[f"R{tag}"]["intercepts"][f"{key}_{k}"] for k in ("D_lo", "D_mid", "D_hi")]
             print(f"   {key}: P = {row[1]['P']:.1f}; a = {row[1]['a']:+.1f} +/- {row[1]['sd_a']:.1f};"
@@ -93,14 +102,15 @@ def main():
     c1 = pd.read_csv(ROOT / "results" / "c1_sample.csv", index_col=0)
     c1 = c1[(c1.role == "CR") & np.isfinite(c1["s_D_mid_1.5"]) & np.isfinite(c1.twist)]
     c1["GM1_1.5"] = [predict(gm, g.Vc_star, 1.5 * g.Re_kpc, "n1") for _, g in c1.iterrows()]
+    c1["GM2_1.5"] = [predict(gm, g.Vc_star, 1.5 * g.Re_kpc, "n2") for _, g in c1.iterrows()]
     out["SAMI"] = dict(twist=c1.twist.tolist(), s=c1["s_D_mid_1.5"].tolist(),
-                       GM1=float(c1["GM1_1.5"].mean()), FS=float(c1.rz_15.mean()))
+                       GM1=float(c1["GM1_1.5"].mean()), GM2=float(c1["GM2_1.5"].mean()),
+                       P_registered_FS_superseded=float(c1.rz_15.mean()))
     # radial profile of predictions for the median counter-rotator
     vc, re = float(t.Vc_star.median()), float(t.Re_kpc.median())
     radii = np.linspace(0.5, 4.0, 15)
     prof = {k: [] for k in MODELS}
     for m in radii:
-        prof["FS"].append(pred_rz(fs, vc, m * re))
         prof["GM1"].append(predict(gm, vc, m * re, "n1"))
         prof["GM2"].append(predict(gm, vc, m * re, "n2"))
     out["profile"] = dict(Vc=vc, Re_kpc=re, radii=radii.tolist(), **{k: list(map(float, v)) for k, v in prof.items()})
@@ -112,7 +122,7 @@ def main():
 def figures(t, out, c1):
     FIG.mkdir(exist_ok=True)
     plt.rcParams.update({"font.size": 8, "axes.linewidth": 0.6})
-    col = {"FS": "#1b9e77", "GM1": "#d95f02", "GM2": "#7570b3"}
+    col = {"GM1": "#d95f02", "GM2": "#7570b3"}
     # Fig. 1: predicted asymmetry against radius
     fig, ax = plt.subplots(figsize=(3.4, 2.5))
     p = out["profile"]
@@ -161,9 +171,9 @@ def figures(t, out, c1):
         a, b = theil_sen(x, y)
         xx = np.linspace(0, 180, 200)
         ax.plot(xx, a[0] + b[0] * xx, color="k", lw=0.6, ls="-", alpha=0.6, label="Theil-Sen fit")
-        for k in ("FS", "GM2"):
+        for k in ("GM1", "GM2"):
             ax.axhline(out[f"R{tag}"]["pred"][k], color=col[k], lw=1.1, ls="--",
-                       label=("flowing space / " + MODELS["GM1"] if k == "FS" else MODELS[k]) + " (prediction)")
+                       label=MODELS[k] + " (prediction)")
         if tag == "1.5":
             ax.scatter(out["SAMI"]["twist"], out["SAMI"]["s"], s=24, marker="D",
                        facecolor="none", edgecolor="#e7298a", lw=0.9, label="SAMI (registered, N=5)")

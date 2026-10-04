@@ -111,6 +111,20 @@ zeta = (U + Up * R_s) / R_s
 check("Delta V = R * zeta  (zeta = flow vorticity)",
       dV_A.subs(S, U / R_s - Up) - R_s * zeta)
 
+# First order in the shear. The additive relation v = Vb + u is exact only
+# for S = 0; in general v_pro = Vb + u - S R/2 + O(S^2). Since
+# Delta V = 2u - S R, the first-order-consistent prediction from an observed
+# rotation curve is Delta V = 2 (v_pro - Vb) for ANY flow profile, and the
+# shortcut "u = V_obs - Vb, Delta V = d(R u)/dR" is wrong at first order.
+ser1 = sp.series(v_pro_A, S, 0, 2).removeO()
+ser2 = sp.series(v_pro_A, S, 0, 3).removeO()
+print(f"\n[A6] v_pro = {sp.simplify(ser1)} + O(S^2)")
+check("v_pro = Vb + u - S R/2 + O(S^2)", ser1 - (Vb + U - S * R_s / 2))
+check("Delta V = 2 (v_pro - Vb) + O(S^2) for any flow profile",
+      dV_A - 2 * (ser1 - Vb))
+check("second-order term in v_pro is S^2 R^2 / (8 Vb)",
+      sp.simplify(ser2 - ser1) - S**2 * R_s**2 / (8 * Vb))
+
 # The RT profile as a flow: u = omega R / (1 + R/R_t).
 u_RT = om * R_s / (1 + R_s / Rt)
 zeta_RT = sp.simplify(sp.diff(R_s * u_RT, R_s) / R_s)
@@ -197,6 +211,9 @@ print("""
  * Formulation A makes additive coupling EXACT for solid-body flow, and
    identifies the RT correction with the flow speed of space, u(R).
    For the RT profile, Delta V rises from 2*omega*R to V_sat = omega*R_t.
+   For a general flow, v_pro = Vb + u - S R/2 + O(S^2), so the prediction
+   from an observed rotation curve is Delta V = 2 (V_obs - Vb) + O(S^2)
+   whatever the profile (the same as Formulation B and as rigid dragging).
 
  * Neither formulation adds a radial force on an isotropic (pressure-
    supported) orbit population, and neither adds lensing mass.

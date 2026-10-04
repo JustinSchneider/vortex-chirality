@@ -594,3 +594,43 @@ The consistent MaNGA figure is secondary 8 with the merger cut: f upper bound 0.
 **Outer-disc forecast** for a typical counter-rotator (V_c ≈ 172 km/s, R_e ≈ 1.7 kpc):
 - Predicted ΔV: 45, 60 and 73 km/s at 2, 3 and 4 R_e.
 - A decisive (likelihood ratio > 10, 80% power) zero-twist test needs about 40–80 counter-rotators at 3 R_e, or 60–120 at 2 R_e, depending on the measurement scatter.
+
+
+### 2026-10-04: CORRECTION to the flowing-space prediction; full number audit of the manuscript
+
+**Error found.** The "flowing space" prediction used since the 2026-10-02 RAR
+normalisation (`analysis/s_pred_rar.py`, `pred_rz`, the C1 registration's P and the
+"FS" rows of the draft Table 1) was ΔV = d(Ru)/dR with u = V_RAR − V_bar. That assumed
+the additive relation V_obs = V_bar + u, which holds only for solid-body flow. For a
+general flow the prograde root of Formulation A is v_pro = V_bar + u − SR/2 + O(S²R²/V_b)
+(`derivations/01_force_laws.py` [A6], new check), so the first-order-consistent
+prediction from an observed rotation curve is ΔV = 2(V_obs − V_bar) for any flow profile,
+the same as Formulation B and as rigid dragging (ψ ∝ r²). The old formula gives
+32.1 / 40.3 km/s at 1.0 / 1.5 R_e for the MaNGA counter-rotators; the corrected
+value is 36.8 / 46.8 km/s. Solving Formulation A exactly for u(R)
+(`analysis/paper_checks.py` `fs_shear`, an ODE) differs from 2(V_RAR − V_bar) by at most
+1.9 km/s per counter-rotator.
+
+**Consequences.**
+- The paper's Table 1 now has two predictions per radius: ψ ∝ r (SGM1; unchanged) and
+  flowing space / vector potential / rigid dragging (FS = the former SGM2 row). The former
+  FS row (32.1 / 40.3 km/s) is withdrawn. The headline numbers (a, f < 0.21, the
+  likelihood-ratio ranges, the 32–37 and 40–47 km/s prediction ranges) are unchanged.
+- The robustness checks (merger cut, matching seeds, pooled-control definition) now quote f
+  and the likelihood ratio against the smaller ψ ∝ r prediction (P = 32.0 instead of 32.1
+  km/s at 1 R_e); the changes are in the second decimal.
+- The C1 registered P (44.9 km/s for the five SAMI counter-rotators) was computed with the
+  superseded formula. It is retained for the registered analysis (which was underpowered
+  in any case) and happens to equal the ψ ∝ r value (44.8); the corrected flowing-space
+  value is 51 km/s. The paper states this.
+- `results/paper_numbers.json` keeps the superseded value under `pred_FS_superseded` and
+  `SAMI.P_registered_FS_superseded`; `analysis/s_pred_rar.py` and `pred_rz` are unchanged
+  so that the registered C1 numbers remain reproducible.
+
+**Other corrections from the same audit** (manuscript only; all numbers re-derived from
+`results/` and found to match): the sign of the vector-potential convention in Eq. (2)
+((∇×A)_z = −2Ω, as in `derivations/01`); the abstract's likelihood-ratio statement now
+restricted to the central and lower drift factors; `paper_checks.py` counted duplicated
+rows of `manga_pa.csv` (14464) for the "all 7582 measured" claim, fixed to count galaxies;
+several roundings tightened. A new symbolic proof replaces the grid check for
+"ΔV ≥ V_obs − V_bar for ψ ∝ rⁿ" (`derivations/04`; it holds for all n ≥ 1).

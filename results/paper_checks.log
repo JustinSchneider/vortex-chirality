@@ -1,0 +1,15 @@
+MaNGA: {'main_sample': 9633, 'inclination_30_80': 7582, 'pa_measured': 7582, 'pa_rows_in_file': 14464}
+C1: parent 2391 {'SAMI': 2141, 'CALIFA': 250}; PA quality 728 (8 CR); SAMI below 50 spaxels: gas 994, stars 843
+MaNGA 1.0 R_e: N(twist) 88, N(fit) 84, robust sd(s) 61.0; no prediction: V_c = [393.3, 459.8, 426.1, 367.6]; drift term CR -18.5 vs controls -13.8
+MaNGA 1.5 R_e: N(twist) 83, N(fit) 80, robust sd(s) 61.7; no prediction: V_c = [393.3, 426.1, 367.6]; drift term CR -10.4 vs controls -9.3
+SAMI gas-dispersion sample: {'N_CR_with_sigma_1.5': 8, 'surveys': {'SAMI': 7, 'CALIFA': 1}}
+validation Omega_3: {'truth': -36.0, 'rel_err_median_abs': 0.013236757354970862, 'rel_err_max_abs': 0.04123434930105634}
+validation Omega_6: {'truth': -72.0, 'rel_err_median_abs': 0.006618378677486171, 'rel_err_max_abs': 0.020181032446930577}
+validation inflow_25: {'VR_err_max_abs': 1.4119681916994828, 'D_shift_max_abs': 1.6342482922482304e-13}
+seeds 1.0 R_e: a -14.3 to -7.0 (median -10.9); max f_up95 0.327; log10 LR -10.0 to -3.2
+seeds 1.5 R_e: a +6.2 to +18.8 (median +13.7); max f_up95 0.927; log10 LR -2.4 to -0.2
+merger with_cut: N_CR 90, CO pool 4029; 1.0 R_e a = -6.93 +/- 8.78, f_up95 0.209, log10 LR -4.13 (N 84); 1.5 R_e a = +11.59 +/- 10.62, f_up95 0.756, log10 LR -1.35 (N 80)
+merger without_cut: N_CR 91, CO pool 4135; 1.0 R_e a = -6.87 +/- 9.93, f_up95 0.320, log10 LR -3.20 (N 85); 1.5 R_e a = +19.95 +/- 10.41, f_up95 0.823, log10 LR -0.04 (N 80)
+pooled-control slowdown (exploratory definition; N_CR 90, controls 270): 1.0 R_e a = -10.53 +/- 9.94, f_up95 0.067, log10 LR -3.73 (N 84); 1.5 R_e a = +11.59 +/- 7.79, f_up95 0.606, log10 LR -2.50 (N 80)
+flowing space 1.0 R_e: exact 37.47; 2(Vobs-Vbar) 37.83 (max |diff| per CR 1.20 km/s); superseded d(Ru)/dR 33.01 (max |diff| 21.23 km/s); N 86; root residual 2.9e-06
+flowing space 1.5 R_e: exact 49.71; 2(Vobs-Vbar) 50.30 (max |diff| per CR 1.93 km/s); superseded d(Ru)/dR 43.08 (max |diff| 33.14 km/s); N 86; root residual 2.9e-06

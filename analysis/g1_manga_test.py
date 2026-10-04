@@ -3,9 +3,10 @@
 """MaNGA G1, stage 2: the registered chirality test (PREREG amendments c-f).
 
 Steps: groups from Delta PA -> merger exclusion -> ring measurements ->
-automated V_* > 100 km/s cut -> matching (3 controls per counter-rotator,
-greedy, no replacement) -> disturbance index -> E = Var(D_CR) - Var(D_CO)
-with bootstrap, at k-1, k, k+1 -> registered verdicts.
+V_* > 40 km/s cut (amendment g; V_CUT below) -> matching (3 controls per
+counter-rotator, greedy, no replacement) -> disturbance index -> S =
+median(D_CO) - median(D_CR) (primary, amendment g) and E = Var(D_CR) -
+Var(D_CO), with bootstrap, at k-1, k, k+1 -> registered verdicts.
 
 --dry runs everything but prints only sample counts (no D, no E), for
 checking mechanics before the real run.

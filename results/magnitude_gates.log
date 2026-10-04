@@ -1,0 +1,65 @@
+========================================================================
+Requirement: omega ~ 20 km/s/kpc = 6.48e-16 s^-1
+========================================================================
+
+[G-seed] Frame-dragging from a central SMBH (GR)
+    M_BH = 1e6 Msun, r = 1 kpc: Omega_LT = 4.5e-32 s^-1 = 1.4e-15 km/s/kpc
+    M_BH = 1e8 Msun, r = 1 kpc: Omega_LT = 4.5e-28 s^-1 = 1.4e-11 km/s/kpc
+    M_BH = 1e10 Msun, r = 1 kpc: Omega_LT = 4.5e-24 s^-1 = 1.4e-07 km/s/kpc
+
+    >>> SMBH frame-dragging (1e10 Msun, a*=1, 1 kpc): delivers 6.9e-09 of the requirement -> FAILS (gap 1.5e+08x)
+    H_seed cannot supply the amplitude; it can only shape structure.
+
+[G-spin] Primordial cosmic vorticity amplified by collapse
+    CMB bound: (omega/H)_0 < 4.7e-11 -> zeta_0 < 1.1e-28 s^-1
+    M_halo = 1e10: Lagrangian radius 0.39 Mpc, collapse to 3 kpc amplifies by 1.7e+04 -> zeta_disk < 1.8e-24 s^-1
+    M_halo = 1e12: Lagrangian radius 1.80 Mpc, collapse to 3 kpc amplifies by 3.6e+05 -> zeta_disk < 3.8e-23 s^-1
+
+    >>> Primordial vorticity after Kelvin amplification: delivers 5.9e-08 of the requirement -> FAILS (gap 1.7e+07x)
+    H_spin cannot supply the amplitude; at most a handedness bias.
+
+[G-vort a] Coupling for curl(Omega) = kappa * rho * v
+    Sigma = 100 Msun/pc^2, v = 150 km/s
+    kappa required = 4.1e-20 m/kg;  G/c^2 = 7.4e-28 m/kg
+    enhancement over GR = 5.6e+07  (MGEM measured eta ~ 2e8)
+    equivalent characteristic speed c_v = sqrt(G/kappa) = 40 km/s
+
+[G-vort b] Earth frame-dragging with the same coupling
+    GR: 39.2 mas/yr; measured to +/-7.2 mas/yr (Gravity Probe B)
+    Unscreened enhanced coupling predicts 2.2e+09 mas/yr
+    >>> Excluded by 3e+08 sigma unless the field is screened at high acceleration (g_Earth ~ 8 m/s^2 >> a0).
+
+[G-vort c] Magnitude of Omega ~ a0 / V
+    V =  50 km/s: a0/V =  74.1 km/s/kpc
+    V = 100 km/s: a0/V =  37.0 km/s/kpc
+    V = 150 km/s: a0/V =  24.7 km/s/kpc
+    V = 250 km/s: a0/V =  14.8 km/s/kpc
+    (a0 / (c H0) = 0.176; 1/(2 pi) = 0.159)
+    The only constant that reproduces omega is a0 -> any viable vortex
+    theory carries an acceleration scale, and screening at g >> a0 is the
+    natural escape from [G-vort b] and [G3].
+
+[G3] Local inertial-frame rotation at the Sun (unscreened H_vort)
+    V_c(R0 = 8.122 kpc) = 229.0 km/s
+    Bounds: dynamical-vs-quasar frame drift 0.02 mas/yr; geodetic precession +/-0.12 mas/yr
+     V_bary  u=Vc-Vb  zeta/2 [km/s/kpc]  precession [mas/yr]  x LLR GP bound
+        150       79      4.9 - 9.7           1.03 - 2.05           9 - 17    
+        175       54      3.3 - 6.6           0.70 - 1.40           6 - 12    
+        200       29      1.8 - 3.6           0.38 - 0.75           3 - 6     
+    >>> Unscreened H_vort predicts 0.38-2.05 mas/yr; LLR allows <~0.12.
+        Excluded unless screened inside the solar system, where
+        g_sun(1 AU) = 5.9e-03 m/s^2 = 5e+07 a0.
+
+[Lambda] Cosmological-constant acceleration inside a galaxy
+    r =    1 kpc: a_Lambda = 1.1e-16 m/s^2 = 9.3e-07 a0
+    r =   10 kpc: a_Lambda = 1.1e-15 m/s^2 = 9.3e-06 a0
+    r =   30 kpc: a_Lambda = 3.3e-15 m/s^2 = 2.8e-05 a0
+    r =  100 kpc: a_Lambda = 1.1e-14 m/s^2 = 9.3e-05 a0
+    zero-gravity radius for M = 1e10 Msun: 0.23 Mpc
+    zero-gravity radius for M = 1e12 Msun: 1.08 Mpc
+    Coincidence: c * sqrt(Lambda/3) / (2 pi) = c H0 sqrt(Omega_L)/(2 pi) = 9.1e-11 m/s^2 vs a0 = 1.2e-10
+    Lambda is ~1e-5 of a0 at 10 kpc, radial and velocity-independent:
+    no prograde/retrograde asymmetry and no role in disk dynamics. It
+    matters only at the ~Mpc zero-gravity radius (group outskirts).
+
+Done.
